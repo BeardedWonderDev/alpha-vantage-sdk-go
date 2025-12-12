@@ -258,6 +258,59 @@ func (c *Client) GetAnalyticsSlidingWindow(params models.AnalyticsSlidingWindowP
 	return &analytics, nil
 }
 
+// GetAnalyticsFixedWindow retrieves advanced analytics over a fixed window.
+func (c *Client) GetAnalyticsFixedWindow(params models.AnalyticsFixedWindowParams) (*models.AnalyticsFixedWindowResponse, error) {
+	if params.Symbols == "" {
+		return nil, fmt.Errorf("symbols are required")
+	}
+	if params.Interval == "" {
+		return nil, fmt.Errorf("interval is required")
+	}
+	if params.Calculations == "" {
+		return nil, fmt.Errorf("calculations are required")
+	}
+
+	queryParams := url.Values{}
+	queryParams.Add("function", "ANALYTICS_FIXED_WINDOW")
+	queryParams.Add("symbols", params.Symbols)
+	queryParams.Add("interval", params.Interval)
+	queryParams.Add("calculations", params.Calculations)
+	for _, r := range params.Range {
+		if r != "" {
+			queryParams.Add("range", r)
+		}
+	}
+	if params.Ohlc != "" {
+		queryParams.Add("ohlc", params.Ohlc)
+	}
+	if params.DataType != "" {
+		queryParams.Add("datatype", params.DataType)
+	}
+	queryParams.Add("apikey", c.apiKey)
+
+	resp, err := http.Get(alphaVantageURL + "?" + queryParams.Encode())
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := detectAPIMessage(data); err != nil {
+		return nil, err
+	}
+
+	var analytics models.AnalyticsFixedWindowResponse
+	if err := json.Unmarshal(data, &analytics); err != nil {
+		return nil, err
+	}
+
+	return &analytics, nil
+}
+
 // GetIndicatorData retrieves indicator data based on the provided parameters.
 func (c *Client) GetIndicatorData(params models.IndicatorParams) ([]byte, error) {
 	queryParams := url.Values{}
