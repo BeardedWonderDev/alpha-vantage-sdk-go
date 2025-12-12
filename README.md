@@ -1,236 +1,224 @@
-# AlphaVantage API Wrapper for Go
-
-This Go library provides a comprehensive client to interact with Alpha Vantage's API, allowing users to fetch time series, crypto, and indicator data seamlessly.
+# Alpha Vantage Go Wrapper
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Version: v1.0.0](https://img.shields.io/badge/version-v1.0.0-blue)
 
+A lightweight, dependency-free Go client for the [Alpha Vantage](https://www.alphavantage.co/) REST API. It exposes typed request/response structs for equities, crypto, technical indicators, and fundamentals while keeping a consistent, ergonomic interface.
+
 ## Table of Contents
-- [Features](#features)
+- [Quick Start](#quick-start)
 - [Installation](#installation)
-- [Example Usage](#example-usage)
-- [Documentation](https://github.com/masonJamesWheeler/alpha-vantage-go-wrapper/wiki).
-- [Contribution](#contribution)
+- [Configuration](#configuration)
+- [Usage Examples](#usage-examples)
+- [Endpoint Coverage](#endpoint-coverage)
+  - [Alpha Intelligence](#alpha-intelligence)
+  - [Fundamental Data](#fundamental-data)
+- [Output Format](#output-format)
+- [Development](#development)
 - [License](#license)
 - [Contact](#contact)
 
-## Features
-
-The Alpha Vantage Go Wrapper offers comprehensive capabilities for financial data retrieval tailored to diverse financial data needs. Our features are outlined below:
-
-### **Time Series**
-
-- **Intraday**: Access real-time and historical intraday stock data.
-- **Daily**: Obtain daily open, high, low, and close (OHLC) stock data.
-- **Daily Adjusted**: Daily OHLC data accounting for stock splits and dividends.
-- **Weekly**: Retrieve consolidated weekly stock data.
-- **Weekly Adjusted**: Weekly stock data factoring in stock splits and dividends.
-- **Monthly**: Aggregated monthly stock data.
-- **Monthly Adjusted**: Monthly stock data inclusive of stock splits and dividends.
-- **Quote Endpoint**: Capture real-time stock data for any security.
-- **Company Overview**: Fetch company profile, fundamentals, and key valuation ratios (function `OVERVIEW`).
-- **ETF Profile & Holdings**: Retrieve ETF metrics (net assets, expense ratio, turnover) plus sector allocation and holdings (function `ETF_PROFILE`).
-- **Dividends**: Historical and declared dividend distributions (function `DIVIDENDS`).
-- **Advanced Analytics (Sliding Window)**: Advanced metrics over sliding windows for one or more symbols (function `ANALYTICS_SLIDING_WINDOW`).
-- **Advanced Analytics (Fixed Window)**: Advanced metrics over a fixed window for one or more symbols (function `ANALYTICS_FIXED_WINDOW`).
-
-### **Cryptocurrencies**
-
-- **Exchange Rates Trending**: Get real-time exchange rates for digital and physical currencies.
-- **Intraday Premium**: Premium intraday crypto data access.
-- **Daily**: Source daily crypto OHLC data.
-- **Weekly**: Aggregated weekly crypto data.
-- **Monthly**: Monthly crypto data insights.
-
-### **Technical Indicators**
-
-Dive into technical indicator values for securities over time:
-
-- **Trend Analysis**: 
-  - SMA Trending, EMA Trending, WMA, DEMA, TEMA, TRIMA, KAMA, MAMA, VWAP Premium, T3, MACD Premium, MACDEXT, STOCH Trending, STOCHF, RSI Trending, STOCHRSI, WILLR, ADX Trending, ADXR, AROON Trending, BBANDS Trending, AD Trending, OBV Trending, HT_TRENDLINE, HT_SINE, HT_TRENDMODE, HT_DCPERIOD, HT_DCPHASE, HT_PHASOR.
-
-- **Momentum Indicators**:
-  - APO, PPO, MOM, BOP, ROC, ROCR, MFI, TRIX, ULTOSC, DX, MINUS_DI, PLUS_DI, MINUS_DM, PLUS_DM.
-
-- **Volume Indicators**:
-  - CCI Trending, CMO, AROONOSC, MIDPOINT, MIDPRICE, SAR, TRANGE, ATR, NATR, ADOSC.
-
-
-## Installation
-
-To install the AlphaVantage API Wrapper, use the standard `go get`:
+## Quick Start
 
 ```bash
-go get github.com:masonJamesWheeler/alpha-vantage-go-wrapper
+export ALPHAVANTAGE_API_KEY=your_api_key
+go test ./...   # optional: verifies your environment
 ```
 
-## Example Usage
-
-In the following example, we showcase how to fetch data for Cryptocurrency (Bitcoin), TimeSeries (Intraday for MSFT), and Bollinger Bands Indicator for MSFT.
-
-To begin with, set your API key as an environment variable. This ensures security and ease of changing the key without altering the code. If you are running your program in a terminal or command line, set the environment variable like this:
-
-```bash
-export API_KEY=your_api_key
-```
-
-Then, the Go program to access the data is as follows:
+Embed in your app:
 
 ```go
 package main
 
 import (
 	"fmt"
+	"log"
 	"os"
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/models"
+
 	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/client"
+	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/models"
 )
 
 func main() {
-	apiKey := os.Getenv("API_KEY") // Fetch the environment variable
-	cli := client.NewClient(apiKey)
-	
-	cryptoParams := models.CryptoParams{
-		Symbol: "BTC",
-		Interval: "1min",
-		Market: "USD",
-		DataType: "json",
-	}
+	cli := client.NewClient(os.Getenv("ALPHAVANTAGE_API_KEY"))
 
-	tsParams := models.TimeSeriesParams{
-		Symbol: "MSFT",
-		Interval: "1min",
+	ts, err := cli.GetIntraday(models.TimeSeriesParams{
+		Symbol:     "MSFT",
+		Interval:   "5min",
 		OutputSize: "compact",
-		DataType: "json",
-	}
-
-	idParams := models.IndicatorParams{
-		Symbol: "MSFT",
-		Interval: "1min",
-		TimePeriod: 60,
-		SeriesType: "close",
-		OutputSize: "compact",
-		DataType: "json",
-	}
-
-	overviewParams := models.CompanyOverviewParams{
-		Symbol: "IBM",
-	}
-
-	etfParams := models.ETFProfileParams{
-		Symbol: "QQQ",
-	}
-
-	dividendParams := models.DividendsParams{
-		Symbol: "IBM",
-	}
-
-	analyticsParams := models.AnalyticsSlidingWindowParams{
-		Symbols:     "AAPL,IBM",
-		Range:       []string{"2month"},
-		Interval:    "DAILY",
-		WindowSize:  20,
-		Calculations: "MEAN,STDDEV(annualized=true)",
-	}
-
-	fixedAnalyticsParams := models.AnalyticsFixedWindowParams{
-		Symbols:      "IBM,AAPL,MSFT",
-		Range:        []string{"2023-07-03", "2023-08-31"},
-		Interval:     "DAILY",
-		Calculations: "MEAN,STDDEV,CORRELATION",
-	}
-
-	cryptoResponse, err := cli.GetCryptoDaily(cryptoParams)
+	})
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
-	fmt.Println(cryptoResponse)
 
-	tsResponse, err := cli.GetIntraday(tsParams)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(tsResponse)
-
-	idResponse, err := cli.GetBBANDS(idParams)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(idResponse)
-
-	overviewResponse, err := cli.GetCompanyOverview(overviewParams)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(overviewResponse)
-
-	etfResponse, err := cli.GetETFProfile(etfParams)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(etfResponse)
-
-	divsResponse, err := cli.GetDividends(dividendParams)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(divsResponse)
-
-	analyticsResponse, err := cli.GetAnalyticsSlidingWindow(analyticsParams)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(analyticsResponse)
-
-	fixedAnalyticsResponse, err := cli.GetAnalyticsFixedWindow(fixedAnalyticsParams)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(fixedAnalyticsResponse)
+	fmt.Println(ts) // pretty String() output
 }
 ```
 
-Given the above code, if the API calls are successful, the output format you can expect is as below:
+## Installation
 
-```
-Daily Prices and Volumes for Digital Currency
-Digital Currency: Bitcoin (BTC)
-Market: United States Dollar (USD)
-Last Refreshed: 2023-09-11 00:00:00
-Time Zone: UTC
+- Go **1.21+** required.
+- Add the module:
 
-Time                     Open                High                Low                 Close               Volume              MarketCap           
-=================================================================================================================================================
-2020-12-16 00:00:00      19426.43            21560.00            19278.60            21335.52            114306.34           114306.34           
-
-...
-
-Intraday (1min) open, high, low, close prices and volume
-Symbol: MSFT
-Last Refreshed: 2023-09-08 19:59:00
-Interval: 1min
-Output Size: Compact
-Time Zone: US/Eastern
-
-Time                     Open           High           Low            Close          Volume         
-====================================================================================================
-2023-09-08 17:59:00      334.66         334.67         334.66         334.66         44             
-
-...
-
-Bollinger Bands (BBANDS)
-Symbol: MSFT
-Last Refreshed: 2023-09-08 19:59:00
-Interval: 1min
-Output Size: 
-Time Zone: 
-
-Time                    Real Upper Band Real Middle Band Real Lower Band
-=====================================================================
-2023-08-18 05:01:00              316.13         315.45         314.77
-
-...
+```bash
+go get github.com/masonJamesWheeler/alpha-vantage-go-wrapper
 ```
 
-This structure provides a readable display of the fetched data. With this, users can easily comprehend and process the obtained financial metrics.
+Import packages:
+
+```go
+import (
+	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/client"
+	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/models"
+)
+```
+
+## Configuration
+
+- **API key**: recommended via `ALPHAVANTAGE_API_KEY` env var; you can also pass the raw string to `client.NewClient`.
+- **Data format**: most params accept `DataType` (`json` or `csv`); defaults to JSON when omitted.
+- **Rate limits**: the client surfaces Alpha Vantage informational/error messages (e.g., throttling) as Go errors; it does not auto-retry.
+
+## Usage Examples
+
+Each endpoint uses a parameter struct from `models` and a method on `Client`.
+
+### Time Series
+```go
+daily, err := cli.GetDailyAdjusted(models.TimeSeriesParams{
+	Symbol:     "AAPL",
+	OutputSize: "full", // or "compact"
+})
+```
+
+### Cryptocurrency
+```go
+btc, err := cli.GetCryptoDaily(models.CryptoParams{
+	Symbol:  "BTC",
+	Market:  "USD",
+	Interval:"1min",
+})
+```
+
+### Technical Indicators
+```go
+bb, err := cli.GetBBANDS(models.IndicatorParams{
+	Symbol:     "MSFT",
+	Interval:   "15min",
+	TimePeriod: 20,
+	SeriesType: "close",
+})
+```
+
+### Fundamentals & Analytics
+```go
+overview, _ := cli.GetCompanyOverview(models.CompanyOverviewParams{Symbol: "IBM"})
+etf, _ := cli.GetETFProfile(models.ETFProfileParams{Symbol: "QQQ"})
+divs, _ := cli.GetDividends(models.DividendsParams{Symbol: "IBM"})
+
+analytics, _ := cli.GetAnalyticsSlidingWindow(models.AnalyticsSlidingWindowParams{
+	Symbols:      "AAPL,IBM",
+	Range:        []string{"2month"},
+	Interval:     "DAILY",
+	WindowSize:   20,
+	Calculations: "MEAN,STDDEV(annualized=true)",
+})
+
+fixed, _ := cli.GetAnalyticsFixedWindow(models.AnalyticsFixedWindowParams{
+	Symbols:      "IBM,AAPL,MSFT",
+	Range:        []string{"2023-07-03", "2023-08-31"},
+	Interval:     "DAILY",
+	Calculations: "MEAN,STDDEV,CORRELATION",
+})
+```
+
+## Endpoint Coverage
+
+### Time Series (equities): 
+
+- Intraday
+- Daily
+- Daily Adjusted
+- Weekly
+- Weekly Adjusted
+- Monthly
+- Monthly Adjusted
+- Global Quote
+
+### Cryptocurrencies: 
+
+- Intraday
+- Daily
+- Weekly
+- Monthly
+- Exchange Rates
+
+### Technical Indicators: 
+
+- SMA/EMA/WMA/DEMA/TEMA/TRIMA/KAMA/MAMA/VWAP/T3
+- MACD/MACDEXT
+- TOCH/STOCHF
+- RSI/STOCHRSI/WILLR
+- ADX/ADXR
+- AROON/AROONOSC
+- BBANDS
+- AD/ADOSC
+- OBV
+- CCI/CMO
+- MIDPOINT/MIDPRICE
+- SAR
+- TRANGE/ATR/NATR
+- ROC/ROCR
+- MOM/BOP/APO/PPO
+- MFI/TRIX/ULTOSC
+- DX/MINUS_DI/PLUS_DI/MINUS_DM/PLUS_DM
+- HT_* family
+
+### Alpha Intelligence
+
+- News & Sentiments `[planned]`
+- Earnings Call Transcript `[planned]`
+- Top Gainers & Losers `[planned]`
+- Insider Transactions `[planned]`
+- Analytics (Fixed Window)
+- Analytics (Sliding Window)
+
+### Fundamental Data
+
+- Company Overview
+- ETF Profile & Holdings
+- Corporate Action - Dividends
+- Corporate Action - Splits `[planned]`
+- Income Statement `[planned]`
+- Balance Sheet `[planned]`
+- Cash Flow `[planned]`
+- Shares Outstanding `[planned]`
+- Earnings History `[planned]`
+- Earnings Estimates `[planned]`
+- Listing & Delisting Status `[planned]`
+- Earnings Calendar `[planned]`
+- IPO Calendar `[planned]`
+
+Each endpoint has a dedicated params struct in `models` and a matching `Client` method. Planned items will follow the same pattern when added.
+
+## Output Format
+
+- All response types implement `String()` for terminal-friendly tables with deterministic ordering (maps normalized to slices).
+- For structured access, use the fields on the returned structs (e.g., `TimeSeriesDaily.Metadata`, `TimeSeriesDaily.Data`).
+- Errors from Alpha Vantage (notes, rate limits, premium notices) are returned as Go errors.
+
+## Development
+
+- Keep the library dependency-free.
+- Run `go test ./...` before submitting changes.
+- Format and vet touched files: `gofmt -w` and `go vet ./...`.
+
+## License
+
+MIT License. See `LICENSE` for details.
+
+## Contact
+
+- Issues & features: GitHub issues on this repo.
+- Maintainer: masonJamesWheeler (GitHub).
