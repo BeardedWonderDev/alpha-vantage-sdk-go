@@ -162,6 +162,43 @@ func (c *Client) GetETFProfile(params models.ETFProfileParams) (*models.ETFProfi
 	return &profile, nil
 }
 
+// GetDividends retrieves historical and declared dividends for a symbol.
+func (c *Client) GetDividends(params models.DividendsParams) (*models.DividendsResponse, error) {
+	if params.Symbol == "" {
+		return nil, fmt.Errorf("symbol is required")
+	}
+
+	queryParams := url.Values{}
+	queryParams.Add("function", "DIVIDENDS")
+	queryParams.Add("symbol", params.Symbol)
+	if params.DataType != "" {
+		queryParams.Add("datatype", params.DataType)
+	}
+	queryParams.Add("apikey", c.apiKey)
+
+	resp, err := http.Get(alphaVantageURL + "?" + queryParams.Encode())
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := detectAPIMessage(data); err != nil {
+		return nil, err
+	}
+
+	var divs models.DividendsResponse
+	if err := json.Unmarshal(data, &divs); err != nil {
+		return nil, err
+	}
+
+	return &divs, nil
+}
+
 // GetIndicatorData retrieves indicator data based on the provided parameters.
 func (c *Client) GetIndicatorData(params models.IndicatorParams) ([]byte, error) {
 	queryParams := url.Values{}
