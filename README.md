@@ -32,6 +32,7 @@ The Alpha Vantage Go Wrapper offers comprehensive capabilities for financial dat
 - **Company Overview**: Fetch company profile, fundamentals, and key valuation ratios (function `OVERVIEW`).
 - **ETF Profile & Holdings**: Retrieve ETF metrics (net assets, expense ratio, turnover) plus sector allocation and holdings (function `ETF_PROFILE`).
 - **Dividends**: Historical and declared dividend distributions (function `DIVIDENDS`).
+- **Advanced Analytics (Sliding Window)**: Advanced metrics over sliding windows for one or more symbols (function `ANALYTICS_SLIDING_WINDOW`).
 
 ### **Cryptocurrencies**
 
@@ -124,6 +125,14 @@ func main() {
 		Symbol: "IBM",
 	}
 
+	analyticsParams := models.AnalyticsSlidingWindowParams{
+		Symbols:     "AAPL,IBM",
+		Range:       []string{"2month"},
+		Interval:    "DAILY",
+		WindowSize:  20,
+		Calculations: "MEAN,STDDEV(annualized=true)",
+	}
+
 	cryptoResponse, err := cli.GetCryptoDaily(cryptoParams)
 	if err != nil {
 		fmt.Println(err)
@@ -159,6 +168,12 @@ func main() {
 		fmt.Println(err)
 	}
 	fmt.Println(divsResponse)
+
+	analyticsResponse, err := cli.GetAnalyticsSlidingWindow(analyticsParams)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(analyticsResponse)
 }
 ```
 

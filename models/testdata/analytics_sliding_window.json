@@ -1,0 +1,43 @@
+{
+  "meta_data": {
+    "symbols": "AAPL,IBM",
+    "window_size": 20,
+    "min_dt": "2025-10-13",
+    "max_dt": "2025-12-11",
+    "ohlc": "Close",
+    "interval": "DAILY"
+  },
+  "payload": {
+    "RETURNS_CALCULATIONS": {
+      "MEAN": {
+        "RUNNING_MEAN": {
+          "AAPL": {
+            "2025-11-10": 0.0043382774801026145
+          },
+          "IBM": {
+            "2025-11-10": 0.005958080458823606
+          }
+        },
+        "window_start": {
+          "2025-11-10": "2025-10-13"
+        }
+      },
+      "STDDEV(ANNUALIZED=TRUE)": {
+        "RUNNING_STDDEV": {
+          "AAPL": {
+            "2025-11-10": 0.1869139698595901
+          },
+          "IBM": {
+            "2025-11-10": 0.340394379924674
+          }
+        },
+        "window_start": {
+          "2025-11-10": "2025-10-13"
+        },
+        "params": {
+          "annualized": "true"
+        }
+      }
+    }
+  }
+}

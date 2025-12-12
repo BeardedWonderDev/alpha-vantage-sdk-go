@@ -199,6 +199,65 @@ func (c *Client) GetDividends(params models.DividendsParams) (*models.DividendsR
 	return &divs, nil
 }
 
+// GetAnalyticsSlidingWindow retrieves advanced analytics over sliding windows.
+func (c *Client) GetAnalyticsSlidingWindow(params models.AnalyticsSlidingWindowParams) (*models.AnalyticsSlidingWindowResponse, error) {
+	if params.Symbols == "" {
+		return nil, fmt.Errorf("symbols are required")
+	}
+	if params.Interval == "" {
+		return nil, fmt.Errorf("interval is required")
+	}
+	if params.WindowSize == 0 {
+		return nil, fmt.Errorf("window size is required")
+	}
+	if params.Calculations == "" {
+		return nil, fmt.Errorf("calculations are required")
+	}
+
+	queryParams := url.Values{}
+	queryParams.Add("function", "ANALYTICS_SLIDING_WINDOW")
+	queryParams.Add("symbols", params.Symbols)
+	queryParams.Add("interval", params.Interval)
+	queryParams.Add("window_size", fmt.Sprintf("%d", params.WindowSize))
+	queryParams.Add("calculations", params.Calculations)
+
+	for _, r := range params.Range {
+		if r != "" {
+			queryParams.Add("range", r)
+		}
+	}
+
+	if params.Ohlc != "" {
+		queryParams.Add("ohlc", params.Ohlc)
+	}
+	if params.DataType != "" {
+		queryParams.Add("datatype", params.DataType)
+	}
+	queryParams.Add("apikey", c.apiKey)
+
+	resp, err := http.Get(alphaVantageURL + "?" + queryParams.Encode())
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := detectAPIMessage(data); err != nil {
+		return nil, err
+	}
+
+	var analytics models.AnalyticsSlidingWindowResponse
+	if err := json.Unmarshal(data, &analytics); err != nil {
+		return nil, err
+	}
+
+	return &analytics, nil
+}
+
 // GetIndicatorData retrieves indicator data based on the provided parameters.
 func (c *Client) GetIndicatorData(params models.IndicatorParams) ([]byte, error) {
 	queryParams := url.Values{}
