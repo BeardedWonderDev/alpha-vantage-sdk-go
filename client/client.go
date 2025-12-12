@@ -1,9 +1,9 @@
 /*
 // Package client offers a comprehensive client for accessing Alpha Vantage's API.
 //
-// The client package has been expanded to support time series, crypto, and indicator data 
-// retrieval from the Alpha Vantage API. Additionally, it comprises structs for the parameters 
-// associated with each method. 
+// The client package has been expanded to support time series, crypto, and indicator data
+// retrieval from the Alpha Vantage API. Additionally, it comprises structs for the parameters
+// associated with each method.
 //
 // Detailed example usage, including setups and explanations, can be found in our README on GitHub:
 // https://github.com/masonJamesWheeler/alpha-vantage-go-wrapper/blob/main/README.md
@@ -16,12 +16,13 @@
 package client
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/models"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/models"
-	"encoding/json"
+	"strings"
 )
 
 const alphaVantageURL = "https://www.alphavantage.co/query"
@@ -70,7 +71,58 @@ func (c *Client) getTimeSeriesData(function string, params models.TimeSeriesPara
 
 	defer resp.Body.Close()
 
-	return ioutil.ReadAll(resp.Body)
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := detectAPIMessage(data); err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+// GetCompanyOverview retrieves the Alpha Vantage company overview for the given symbol.
+// The endpoint requires function=OVERVIEW and a stock symbol.
+func (c *Client) GetCompanyOverview(params models.CompanyOverviewParams) (*models.CompanyOverview, error) {
+	if params.Symbol == "" {
+		return nil, fmt.Errorf("symbol is required")
+	}
+
+	queryParams := url.Values{}
+	queryParams.Add("function", "OVERVIEW")
+	queryParams.Add("symbol", params.Symbol)
+	if params.DataType != "" {
+		queryParams.Add("datatype", params.DataType)
+	}
+	queryParams.Add("apikey", c.apiKey)
+
+	resp, err := http.Get(alphaVantageURL + "?" + queryParams.Encode())
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := detectAPIMessage(data); err != nil {
+		return nil, err
+	}
+
+	var overview models.CompanyOverview
+	if err := json.Unmarshal(data, &overview); err != nil {
+		return nil, err
+	}
+
+	if overview.Symbol == "" {
+		return nil, fmt.Errorf("failed to retrieve company overview for symbol %s", params.Symbol)
+	}
+
+	return &overview, nil
 }
 
 // GetIndicatorData retrieves indicator data based on the provided parameters.
@@ -103,9 +155,17 @@ func (c *Client) GetIndicatorData(params models.IndicatorParams) ([]byte, error)
 
 	defer resp.Body.Close()
 
-	return ioutil.ReadAll(resp.Body)
-}
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
 
+	if err := detectAPIMessage(data); err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
 
 func (c *Client) getIndicator(indicatorName string, params models.IndicatorParams) (*models.IndicatorResponse, error) {
 	// Add the function name to the params
@@ -124,6 +184,27 @@ func (c *Client) getIndicator(indicatorName string, params models.IndicatorParam
 	return &indicatorResponse, nil
 }
 
+// detectAPIMessage inspects a raw Alpha Vantage response for top-level
+// informational or error messages (e.g., rate limits, premium endpoint notices)
+// and converts them into Go errors for callers.
+func detectAPIMessage(data []byte) error {
+	var raw map[string]interface{}
+	if err := json.Unmarshal(data, &raw); err != nil {
+		// If the payload isn't a JSON object, let the caller's unmarshal handle it.
+		return nil
+	}
+
+	for _, key := range []string{"Information", "Note", "Error Message"} {
+		if v, ok := raw[key]; ok {
+			if msg, ok := v.(string); ok && strings.TrimSpace(msg) != "" {
+				return fmt.Errorf("alpha vantage %s: %s", strings.ToLower(key), msg)
+			}
+		}
+	}
+
+	return nil
+}
+
 // GetCurrencyExchangeRate retrieves currency exchange rates based on the provided parameters.
 func (c *Client) GetCurrencyExchangeRate(params models.CurrencyExchangeParams) (*models.CurrencyExchangeRateResponse, error) {
 	queryParams := url.Values{}
@@ -140,6 +221,10 @@ func (c *Client) GetCurrencyExchangeRate(params models.CurrencyExchangeParams) (
 
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := detectAPIMessage(data); err != nil {
 		return nil, err
 	}
 
@@ -168,6 +253,10 @@ func (c *Client) GetCryptoExchangeRates(params models.CryptoExchangeRateParams) 
 
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := detectAPIMessage(data); err != nil {
 		return nil, err
 	}
 
@@ -203,6 +292,10 @@ func (c *Client) getCryptoData(functionType string, params models.CryptoParams) 
 
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := detectAPIMessage(data); err != nil {
 		return nil, err
 	}
 
@@ -348,6 +441,7 @@ func (c *Client) GetMonthlyAdjusted(params models.TimeSeriesParams) (models.Time
 	}
 	return monthlyAdjustedData, nil
 }
+
 // GetQuoteEndpoint retrieves the quote endpoint based on the provided parameters.
 // It returns a Quote and an error if there is any.
 func (c *Client) GetQuoteEndpoint(params models.TimeSeriesParams) (models.Quote, error) {
@@ -375,6 +469,7 @@ func (c *Client) GetSMA(params models.IndicatorParams) (*models.IndicatorRespons
 func (c *Client) GetEMA(params models.IndicatorParams) (*models.IndicatorResponse, error) {
 	return c.getIndicator("EMA", params)
 }
+
 // GetWMA retrieves WMA data based on the provided parameters.
 func (c *Client) GetWMA(params models.IndicatorParams) (*models.IndicatorResponse, error) {
 	return c.getIndicator("WMA", params)
