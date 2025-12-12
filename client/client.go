@@ -125,6 +125,43 @@ func (c *Client) GetCompanyOverview(params models.CompanyOverviewParams) (*model
 	return &overview, nil
 }
 
+// GetETFProfile retrieves ETF profile and holdings for the given symbol.
+func (c *Client) GetETFProfile(params models.ETFProfileParams) (*models.ETFProfile, error) {
+	if params.Symbol == "" {
+		return nil, fmt.Errorf("symbol is required")
+	}
+
+	queryParams := url.Values{}
+	queryParams.Add("function", "ETF_PROFILE")
+	queryParams.Add("symbol", params.Symbol)
+	if params.DataType != "" {
+		queryParams.Add("datatype", params.DataType)
+	}
+	queryParams.Add("apikey", c.apiKey)
+
+	resp, err := http.Get(alphaVantageURL + "?" + queryParams.Encode())
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := detectAPIMessage(data); err != nil {
+		return nil, err
+	}
+
+	var profile models.ETFProfile
+	if err := json.Unmarshal(data, &profile); err != nil {
+		return nil, err
+	}
+
+	return &profile, nil
+}
+
 // GetIndicatorData retrieves indicator data based on the provided parameters.
 func (c *Client) GetIndicatorData(params models.IndicatorParams) ([]byte, error) {
 	queryParams := url.Values{}

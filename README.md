@@ -30,6 +30,7 @@ The Alpha Vantage Go Wrapper offers comprehensive capabilities for financial dat
 - **Monthly Adjusted**: Monthly stock data inclusive of stock splits and dividends.
 - **Quote Endpoint**: Capture real-time stock data for any security.
 - **Company Overview**: Fetch company profile, fundamentals, and key valuation ratios (function `OVERVIEW`).
+- **ETF Profile & Holdings**: Retrieve ETF metrics (net assets, expense ratio, turnover) plus sector allocation and holdings (function `ETF_PROFILE`).
 
 ### **Cryptocurrencies**
 
@@ -114,6 +115,10 @@ func main() {
 		Symbol: "IBM",
 	}
 
+	etfParams := models.ETFProfileParams{
+		Symbol: "QQQ",
+	}
+
 	cryptoResponse, err := cli.GetCryptoDaily(cryptoParams)
 	if err != nil {
 		fmt.Println(err)
@@ -137,6 +142,12 @@ func main() {
 		fmt.Println(err)
 	}
 	fmt.Println(overviewResponse)
+
+	etfResponse, err := cli.GetETFProfile(etfParams)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(etfResponse)
 }
 ```
 
