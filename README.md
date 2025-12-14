@@ -207,8 +207,8 @@ fmt.Println(string(csvBytes))
 - Company Overview
 - ETF Profile & Holdings
 - Corporate Action - Dividends
-- Corporate Action - Splits `[planned]`
-- Income Statement `[planned]`
+- Corporate Action - Splits
+- Income Statement
 - Balance Sheet `[planned]`
 - Cash Flow `[planned]`
 - Shares Outstanding `[planned]`
