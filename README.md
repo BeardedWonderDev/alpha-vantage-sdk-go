@@ -133,6 +133,24 @@ fixed, _ := cli.GetAnalyticsFixedWindow(models.AnalyticsFixedWindowParams{
 })
 ```
 
+### Symbol Search
+```go
+search, err := cli.GetSymbolSearch(models.SymbolSearchParams{Keywords: "microsoft"})
+if err != nil {
+	log.Fatal(err)
+}
+
+for _, match := range search.BestMatches {
+	fmt.Printf("%s - %s (%s) score=%0.4f\n", match.Symbol, match.Name, match.Region, match.MatchScore)
+}
+
+csvBytes, _ := cli.GetSymbolSearchData(models.SymbolSearchParams{
+	Keywords: "microsoft",
+	DataType: "csv",
+})
+fmt.Println(string(csvBytes))
+```
+
 ## Endpoint Coverage
 
 ### Time Series (equities): 
