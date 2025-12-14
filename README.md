@@ -210,7 +210,7 @@ fmt.Println(string(csvBytes))
 - Corporate Action - Splits
 - Income Statement
 - Balance Sheet
-- Cash Flow `[planned]`
+- Cash Flow
 - Shares Outstanding `[planned]`
 - Earnings History `[planned]`
 - Earnings Estimates `[planned]`
