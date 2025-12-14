@@ -4,7 +4,7 @@ Repo-specific operating guide for Codex when working in this Go library.
 
 ## Global Rules and Required Reading
 - Always read and follow the global rules at `~/.codex/AGENTS.md` before applying any repo-local guidance here.
-- This repo is plain Go; no stack-specific rule files currently apply (e.g., NextJS15_React19.md is **not** relevant).
+- This repo is plain Go; also read and follow `rules/Go_General.md`.
 
 ## Repository Snapshot
 - Language: Go 1.21.1 (`go.mod`).
