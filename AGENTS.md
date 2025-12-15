@@ -1,4 +1,4 @@
-# AGENTS – alpha-vantage-go-wrapper
+# AGENTS – alpha-vantage-sdk-go
 
 Repo-specific operating guide for Codex when working in this Go library.
 
@@ -8,7 +8,7 @@ Repo-specific operating guide for Codex when working in this Go library.
 
 ## Repository Snapshot
 - Language: Go 1.21.1 (`go.mod`).
-- Module path: `github.com/masonJamesWheeler/alpha-vantage-go-wrapper`.
+- Module path: `github.com/BeardedWonderDev/alpha-vantage-sdk-go`.
 - Packages: `client` (API surface) and `models` (data types, JSON parsing, string formatters).
 - Dependencies: standard library only; keep it that way unless absolutely necessary.
 - No tests or CI config are present yet; additions should be standard Go tooling friendly.

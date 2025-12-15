@@ -3,8 +3,8 @@ package av
 import (
 	"net/http"
 
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal"
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/types"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/internal"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/types"
 )
 
 func NewClient(apiKey string) types.Client {

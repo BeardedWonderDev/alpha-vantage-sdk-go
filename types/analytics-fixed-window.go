@@ -59,4 +59,3 @@ func (r AnalyticsFixedWindowResponse) String() string {
 
 	return sb.String()
 }
-

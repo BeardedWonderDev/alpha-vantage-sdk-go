@@ -63,4 +63,3 @@ func (r AnalyticsSlidingWindowResponse) String() string {
 
 	return sb.String()
 }
-

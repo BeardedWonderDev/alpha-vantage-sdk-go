@@ -1,6 +1,6 @@
 package fundamentaldata
 
-import itypes "github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/types"
+import itypes "github.com/BeardedWonderDev/alpha-vantage-sdk-go/internal/types"
 
 type FundamentalDataService struct {
 	client itypes.Client

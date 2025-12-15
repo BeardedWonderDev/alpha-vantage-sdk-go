@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/types"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/types"
 )
 
 // CompanyOverview retrieves the Alpha Vantage company overview for the given symbol.

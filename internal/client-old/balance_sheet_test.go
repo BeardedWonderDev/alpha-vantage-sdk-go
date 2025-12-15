@@ -8,7 +8,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/models"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/models"
 )
 
 func TestGetBalanceSheet_SendsExpectedQueryAndParsesResponse(t *testing.T) {

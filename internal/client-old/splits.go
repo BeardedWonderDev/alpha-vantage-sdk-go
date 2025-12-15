@@ -3,7 +3,7 @@ package client
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/models"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/models"
 	"io/ioutil"
 	"net/http"
 	"net/url"

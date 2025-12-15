@@ -24,4 +24,3 @@ type ExchangeRateInfo struct {
 	BidPrice         string `json:"8. Bid Price"`
 	AskPrice         string `json:"9. Ask Price"`
 }
-

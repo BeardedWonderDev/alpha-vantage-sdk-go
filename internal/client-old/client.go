@@ -6,7 +6,7 @@
 // associated with each method.
 //
 // Detailed example usage, including setups and explanations, can be found in our README on GitHub:
-// https://github.com/masonJamesWheeler/alpha-vantage-go-wrapper/blob/main/README.md
+// https://github.com/BeardedWonderDev/alpha-vantage-sdk-go/blob/main/README.md
 //
 // For more about the Alpha Vantage API, please see: https://www.alphavantage.co/documentation/.
 //
@@ -23,7 +23,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/models"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/models"
 )
 
 const alphaVantageURL = "https://www.alphavantage.co/query"

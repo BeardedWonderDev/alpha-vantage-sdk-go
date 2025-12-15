@@ -152,4 +152,3 @@ func asString(v interface{}) string {
 	s, _ := v.(string)
 	return s
 }
-

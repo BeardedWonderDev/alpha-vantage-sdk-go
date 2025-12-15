@@ -38,14 +38,14 @@ import (
 	"log"
 	"os"
 
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/client"
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/models"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/av"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/types"
 )
 
 func main() {
-	cli := client.NewClient(os.Getenv("ALPHAVANTAGE_API_KEY"))
+	cli := av.NewClient(os.Getenv("ALPHAVANTAGE_API_KEY"))
 
-	ts, err := cli.GetIntraday(models.TimeSeriesParams{
+	ts, err := cli.CoreStocks().Intraday(types.TimeSeriesParams{
 		Symbol:     "MSFT",
 		Interval:   "5min",
 		OutputSize: "compact",
@@ -64,31 +64,31 @@ func main() {
 - Add the module:
 
 ```bash
-go get github.com/masonJamesWheeler/alpha-vantage-go-wrapper
+go get github.com/BeardedWonderDev/alpha-vantage-sdk-go
 ```
 
 Import packages:
 
 ```go
 import (
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/client"
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/models"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/av"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/types"
 )
 ```
 
 ## Configuration
 
-- **API key**: recommended via `ALPHAVANTAGE_API_KEY` env var; you can also pass the raw string to `client.NewClient`.
-- **Data format**: most params accept `DataType` (`json` or `csv`); defaults to JSON when omitted.
+- **API key**: recommended via `ALPHAVANTAGE_API_KEY` env var; you can also pass the raw string to `av.NewClient`.
+- **Data format**: JSON only (the client enforces `datatype=json`).
 - **Rate limits**: the client surfaces Alpha Vantage informational/error messages (e.g., throttling) as Go errors; it does not auto-retry.
 
 ## Usage Examples
 
-Each endpoint uses a parameter struct from `models` and a method on `Client`.
+The SDK is organized by domain: `CoreStocks()`, `Crypto()`, `Forex()`, `TechnicalIndicators()`, `FundamentalData()`, and `AlphaInteligence()`.
 
 ### Time Series
 ```go
-daily, err := cli.GetDailyAdjusted(models.TimeSeriesParams{
+daily, err := cli.CoreStocks().DailyAdjusted(types.TimeSeriesParams{
 	Symbol:     "AAPL",
 	OutputSize: "full", // or "compact"
 })
@@ -96,16 +96,12 @@ daily, err := cli.GetDailyAdjusted(models.TimeSeriesParams{
 
 ### Cryptocurrency
 ```go
-btc, err := cli.GetCryptoDaily(models.CryptoParams{
-	Symbol:  "BTC",
-	Market:  "USD",
-	Interval:"1min",
-})
+btc, err := cli.Crypto().Daily(types.CryptoDailyParams{Symbol: "BTC", Market: "USD"})
 ```
 
 ### Technical Indicators
 ```go
-bb, err := cli.GetBBANDS(models.IndicatorParams{
+bb, err := cli.TechnicalIndicators().BBANDS(types.IndicatorParams{
 	Symbol:     "MSFT",
 	Interval:   "15min",
 	TimePeriod: 20,
@@ -115,11 +111,11 @@ bb, err := cli.GetBBANDS(models.IndicatorParams{
 
 ### Fundamentals & Analytics
 ```go
-overview, _ := cli.GetCompanyOverview(models.CompanyOverviewParams{Symbol: "IBM"})
-etf, _ := cli.GetETFProfile(models.ETFProfileParams{Symbol: "QQQ"})
-divs, _ := cli.GetDividends(models.DividendsParams{Symbol: "IBM"})
+overview, _ := cli.FundamentalData().CompanyOverview("IBM")
+etf, _ := cli.FundamentalData().ETFProfile("QQQ")
+divs, _ := cli.FundamentalData().Dividends("IBM")
 
-analytics, _ := cli.GetAnalyticsSlidingWindow(models.AnalyticsSlidingWindowParams{
+analytics, _ := cli.AlphaInteligence().AnalyticsSlidingWindow(types.AnalyticsSlidingWindowParams{
 	Symbols:      "AAPL,IBM",
 	Range:        []string{"2month"},
 	Interval:     "DAILY",
@@ -127,7 +123,7 @@ analytics, _ := cli.GetAnalyticsSlidingWindow(models.AnalyticsSlidingWindowParam
 	Calculations: "MEAN,STDDEV(annualized=true)",
 })
 
-fixed, _ := cli.GetAnalyticsFixedWindow(models.AnalyticsFixedWindowParams{
+fixed, _ := cli.AlphaInteligence().AnalyticsFixedWindow(types.AnalyticsFixedWindowParams{
 	Symbols:      "IBM,AAPL,MSFT",
 	Range:        []string{"2023-07-03", "2023-08-31"},
 	Interval:     "DAILY",
@@ -137,7 +133,7 @@ fixed, _ := cli.GetAnalyticsFixedWindow(models.AnalyticsFixedWindowParams{
 
 ### Symbol Search
 ```go
-search, err := cli.GetSymbolSearch(models.SymbolSearchParams{Keywords: "microsoft"})
+search, err := cli.CoreStocks().SymbolSearch("microsoft")
 if err != nil {
 	log.Fatal(err)
 }
@@ -145,12 +141,6 @@ if err != nil {
 for _, match := range search.BestMatches {
 	fmt.Printf("%s - %s (%s) score=%0.4f\n", match.Symbol, match.Name, match.Region, match.MatchScore)
 }
-
-csvBytes, _ := cli.GetSymbolSearchData(models.SymbolSearchParams{
-	Keywords: "microsoft",
-	DataType: "csv",
-})
-fmt.Println(string(csvBytes))
 ```
 
 ## Endpoint Coverage

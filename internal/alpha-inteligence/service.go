@@ -1,6 +1,6 @@
 package alphainteligence
 
-import itypes "github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/types"
+import itypes "github.com/BeardedWonderDev/alpha-vantage-sdk-go/internal/types"
 
 type AlphaInteligenceService struct {
 	client itypes.Client
@@ -9,4 +9,3 @@ type AlphaInteligenceService struct {
 func NewAlphaInteligenceService(client itypes.Client) *AlphaInteligenceService {
 	return &AlphaInteligenceService{client: client}
 }
-

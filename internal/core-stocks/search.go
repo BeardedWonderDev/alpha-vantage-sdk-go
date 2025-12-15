@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/types"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/types"
 )
 
 // SymbolSearch retrieves the best-matching symbols and market information based on keywords.

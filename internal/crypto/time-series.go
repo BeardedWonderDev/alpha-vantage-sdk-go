@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/types"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/types"
 )
 
 func (c *CryptoService) Intraday(params types.CryptoIntradayParams) (*types.CryptoSeriesResponse, error) {
@@ -125,4 +125,3 @@ func (c *CryptoService) Monthly(params types.CryptoMonthlyParams) (*types.Crypto
 
 	return cryptoData, nil
 }
-

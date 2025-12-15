@@ -8,8 +8,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/av"
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/types"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/av"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/types"
 )
 
 type roundTripFunc func(*http.Request) (*http.Response, error)

@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/types"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/types"
 )
 
 // ExchangeRate retrieves the real-time exchange rate between a digital currency and another currency.
@@ -36,4 +36,3 @@ func (c *CryptoService) ExchangeRate(params types.CryptoExchangeRateParams) (*ty
 
 	return &resp, nil
 }
-

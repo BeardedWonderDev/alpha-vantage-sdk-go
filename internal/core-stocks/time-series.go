@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/types"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/types"
 )
 
 // Intraday retrieves intraday data based on the provided parameters.

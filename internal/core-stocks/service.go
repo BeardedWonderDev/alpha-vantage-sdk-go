@@ -5,8 +5,8 @@ import (
 	"net/url"
 	"strings"
 
-	itypes "github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/types"
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/types"
+	itypes "github.com/BeardedWonderDev/alpha-vantage-sdk-go/internal/types"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/types"
 )
 
 type CoreStucksService struct {

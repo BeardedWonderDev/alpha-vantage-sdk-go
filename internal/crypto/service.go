@@ -1,6 +1,6 @@
 package crypto
 
-import itypes "github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/types"
+import itypes "github.com/BeardedWonderDev/alpha-vantage-sdk-go/internal/types"
 
 type CryptoService struct {
 	client itypes.Client
@@ -9,4 +9,3 @@ type CryptoService struct {
 func NewCryptoService(client itypes.Client) *CryptoService {
 	return &CryptoService{client: client}
 }
-

@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/types"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/types"
 )
 
 func (c *AlphaInteligenceService) AnalyticsSlidingWindow(params types.AnalyticsSlidingWindowParams) (*types.AnalyticsSlidingWindowResponse, error) {
@@ -102,4 +102,3 @@ func (c *AlphaInteligenceService) AnalyticsFixedWindow(params types.AnalyticsFix
 
 	return &resp, nil
 }
-

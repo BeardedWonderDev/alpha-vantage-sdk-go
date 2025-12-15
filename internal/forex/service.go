@@ -1,6 +1,6 @@
 package forex
 
-import itypes "github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/types"
+import itypes "github.com/BeardedWonderDev/alpha-vantage-sdk-go/internal/types"
 
 type ForexService struct {
 	client itypes.Client
@@ -9,4 +9,3 @@ type ForexService struct {
 func NewForexService(client itypes.Client) *ForexService {
 	return &ForexService{client: client}
 }
-

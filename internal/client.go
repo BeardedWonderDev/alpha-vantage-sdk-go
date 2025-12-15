@@ -8,13 +8,13 @@ import (
 	"net/url"
 	"strings"
 
-	alphainteligence "github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/alpha-inteligence"
-	corestocks "github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/core-stocks"
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/crypto"
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/forex"
-	fundamentaldata "github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/fundamental-data"
-	technicalindicators "github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/technical-indicators"
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/types"
+	alphainteligence "github.com/BeardedWonderDev/alpha-vantage-sdk-go/internal/alpha-inteligence"
+	corestocks "github.com/BeardedWonderDev/alpha-vantage-sdk-go/internal/core-stocks"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/internal/crypto"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/internal/forex"
+	fundamentaldata "github.com/BeardedWonderDev/alpha-vantage-sdk-go/internal/fundamental-data"
+	technicalindicators "github.com/BeardedWonderDev/alpha-vantage-sdk-go/internal/technical-indicators"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/types"
 )
 
 const alphaVantageURL = "https://www.alphavantage.co/query"
