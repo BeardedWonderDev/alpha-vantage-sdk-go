@@ -200,6 +200,12 @@ Contributions are welcome. Please open an issue to discuss the change, then subm
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
+### Upstream Attribution (MIT Notice)
+
+This project is based on https://github.com/masonJamesWheeler/alpha-vantage-go-wrapper and includes a small portion of the original code.
+
+Copyright (c) 2023 Mason Wheeler. Used under the MIT License; the required copyright and permission notice is included in `LICENSE`.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTACT -->
@@ -213,6 +219,7 @@ Project Link: https://github.com/BeardedWonderDev/alpha-vantage-sdk-go
 ## Acknowledgments
 
 - [Alpha Vantage](https://www.alphavantage.co/documentation/)
+- [alpha-vantage-go-wrapper](https://github.com/masonJamesWheeler/alpha-vantage-go-wrapper) (MIT licensed)
 - [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
