@@ -8,7 +8,7 @@
 Author: Mason Wheeler
 */
 
-package models
+package types
 
 import (
 	"encoding/json"
@@ -27,7 +27,6 @@ type IndicatorParams struct {
 	SeriesType string
 	Month      string
 	OutputSize string
-	DataType   string
 }
 
 type IndicatorResponse struct {

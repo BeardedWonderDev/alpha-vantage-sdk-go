@@ -8,7 +8,7 @@
 Author: Mason Wheeler
 */
 
-package models
+package types
 
 import (
 	"encoding/json"
@@ -38,7 +38,6 @@ type TimeSeriesParams struct {
 	Interval   string
 	Month      interface{}
 	OutputSize interface{}
-	DataType   interface{}
 }
 
 // OHLCV represents the Open, High, Low, Close, and Volume data for a given timestamp.

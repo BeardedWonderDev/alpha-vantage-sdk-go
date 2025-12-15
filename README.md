@@ -1,174 +1,238 @@
-# AlphaVantage API Wrapper for Go
+<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+<a id="readme-top"></a>
 
-This Go library provides a comprehensive client to interact with Alpha Vantage's API, allowing users to fetch time series, crypto, and indicator data seamlessly.
+<!-- PROJECT SHIELDS -->
+<!--
+I'm using markdown "reference style" links for readability.
+Reference links are enclosed in brackets [ ] instead of parentheses ( ).
+See the bottom of this document for the declaration of the reference variables.
+-->
 
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![Version: v1.0.0](https://img.shields.io/badge/version-v1.0.0-blue)
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
 
-## Table of Contents
-- [Features](#features)
-- [Installation](#installation)
-- [Example Usage](#example-usage)
-- [Documentation](https://github.com/masonJamesWheeler/alpha-vantage-go-wrapper/wiki).
-- [Contribution](#contribution)
-- [License](#license)
-- [Contact](#contact)
+<!-- PROJECT HEADER -->
+<br />
+<div align="center">
+  <h3 align="center">alpha-vantage-sdk-go</h3>
 
-## Features
+  <p align="center">
+    A lightweight, dependency-free Go SDK for the Alpha Vantage REST API with typed requests/responses and domain-oriented services.
+    <br />
+    <a href="https://github.com/BeardedWonderDev/alpha-vantage-sdk-go"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/BeardedWonderDev/alpha-vantage-sdk-go/issues/new?labels=bug">Report Bug</a>
+    &middot;
+    <a href="https://github.com/BeardedWonderDev/alpha-vantage-sdk-go/issues/new?labels=enhancement">Request Feature</a>
+  </p>
+</div>
 
-The Alpha Vantage Go Wrapper offers comprehensive capabilities for financial data retrieval tailored to diverse financial data needs. Our features are outlined below:
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
 
-### **Time Series**
+<!-- ABOUT THE PROJECT -->
+## About The Project
 
-- **Intraday**: Access real-time and historical intraday stock data.
-- **Daily**: Obtain daily open, high, low, and close (OHLC) stock data.
-- **Daily Adjusted**: Daily OHLC data accounting for stock splits and dividends.
-- **Weekly**: Retrieve consolidated weekly stock data.
-- **Weekly Adjusted**: Weekly stock data factoring in stock splits and dividends.
-- **Monthly**: Aggregated monthly stock data.
-- **Monthly Adjusted**: Monthly stock data inclusive of stock splits and dividends.
-- **Quote Endpoint**: Capture real-time stock data for any security.
+`alpha-vantage-sdk-go` is a Go SDK for the [Alpha Vantage](https://www.alphavantage.co/) REST API. The package is organized by domain services (e.g. `CoreStocks`, `Crypto`, `Forex`) and returns strongly typed response structs.
 
-### **Cryptocurrencies**
+Key characteristics:
 
-- **Exchange Rates Trending**: Get real-time exchange rates for digital and physical currencies.
-- **Intraday Premium**: Premium intraday crypto data access.
-- **Daily**: Source daily crypto OHLC data.
-- **Weekly**: Aggregated weekly crypto data.
-- **Monthly**: Monthly crypto data insights.
+- Dependency-free (standard library only)
+- JSON-only (the client enforces `datatype=json`)
+- Domain-oriented services from a single client
+- Alpha Vantage informational/error payloads are surfaced as Go errors
 
-### **Technical Indicators**
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-Dive into technical indicator values for securities over time:
+### Built With
 
-- **Trend Analysis**: 
-  - SMA Trending, EMA Trending, WMA, DEMA, TEMA, TRIMA, KAMA, MAMA, VWAP Premium, T3, MACD Premium, MACDEXT, STOCH Trending, STOCHF, RSI Trending, STOCHRSI, WILLR, ADX Trending, ADXR, AROON Trending, BBANDS Trending, AD Trending, OBV Trending, HT_TRENDLINE, HT_SINE, HT_TRENDMODE, HT_DCPERIOD, HT_DCPHASE, HT_PHASOR.
+- [Go](https://go.dev/)
 
-- **Momentum Indicators**:
-  - APO, PPO, MOM, BOP, ROC, ROCR, MFI, TRIX, ULTOSC, DX, MINUS_DI, PLUS_DI, MINUS_DM, PLUS_DM.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-- **Volume Indicators**:
-  - CCI Trending, CMO, AROONOSC, MIDPOINT, MIDPRICE, SAR, TRANGE, ATR, NATR, ADOSC.
+<!-- GETTING STARTED -->
+## Getting Started
 
+### Prerequisites
 
-## Installation
+- Go 1.21+
+- An Alpha Vantage API key (get one at https://www.alphavantage.co/support/#api-key)
 
-To install the AlphaVantage API Wrapper, use the standard `go get`:
+### Installation
 
-```bash
-go get github.com:masonJamesWheeler/alpha-vantage-go-wrapper
+```sh
+go get github.com/BeardedWonderDev/alpha-vantage-sdk-go
 ```
 
-## Example Usage
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-In the following example, we showcase how to fetch data for Cryptocurrency (Bitcoin), TimeSeries (Intraday for MSFT), and Bollinger Bands Indicator for MSFT.
+<!-- USAGE EXAMPLES -->
+## Usage
 
-To begin with, set your API key as an environment variable. This ensures security and ease of changing the key without altering the code. If you are running your program in a terminal or command line, set the environment variable like this:
-
-```bash
-export API_KEY=your_api_key
-```
-
-Then, the Go program to access the data is as follows:
+Create a client and call domain services:
 
 ```go
 package main
 
 import (
 	"fmt"
+	"log"
 	"os"
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/models"
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/client"
+
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/av"
+	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/types"
 )
 
 func main() {
-	apiKey := os.Getenv("API_KEY") // Fetch the environment variable
-	cli := client.NewClient(apiKey)
-	
-	cryptoParams := models.CryptoParams{
-		Symbol: "BTC",
-		Interval: "1min",
-		Market: "USD",
-		DataType: "json",
-	}
+	cli := av.NewClient(os.Getenv("ALPHAVANTAGE_API_KEY"))
 
-	tsParams := models.TimeSeriesParams{
-		Symbol: "MSFT",
-		Interval: "1min",
+	// Core Stocks: Intraday time series
+	intraday, err := cli.CoreStocks().Intraday(types.TimeSeriesParams{
+		Symbol:     "MSFT",
+		Interval:   "5min",
 		OutputSize: "compact",
-		DataType: "json",
+	})
+	if err != nil {
+		log.Fatal(err)
 	}
+	fmt.Println(intraday)
 
-	idParams := models.IndicatorParams{
-		Symbol: "MSFT",
-		Interval: "1min",
-		TimePeriod: 60,
+	// Core Stocks: Quote
+	quote, err := cli.CoreStocks().Quote("MSFT")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(quote)
+
+	// Technical Indicators: BBANDS
+	bbands, err := cli.TechnicalIndicators().BBANDS(types.IndicatorParams{
+		Symbol:     "MSFT",
+		Interval:   "15min",
+		TimePeriod: 20,
 		SeriesType: "close",
-		OutputSize: "compact",
-		DataType: "json",
-	}
-
-	cryptoResponse, err := cli.GetCryptoDaily(cryptoParams)
+	})
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
-	fmt.Println(cryptoResponse)
-
-	tsResponse, err := cli.GetIntraday(tsParams)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(tsResponse)
-
-	idResponse, err := cli.GetBBANDS(idParams)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(idResponse)
+	fmt.Println(bbands)
 }
 ```
 
-Given the above code, if the API calls are successful, the output format you can expect is as below:
+### Custom HTTP Client
 
-```
-Daily Prices and Volumes for Digital Currency
-Digital Currency: Bitcoin (BTC)
-Market: United States Dollar (USD)
-Last Refreshed: 2023-09-11 00:00:00
-Time Zone: UTC
-
-Time                     Open                High                Low                 Close               Volume              MarketCap           
-=================================================================================================================================================
-2020-12-16 00:00:00      19426.43            21560.00            19278.60            21335.52            114306.34           114306.34           
-
-...
-
-Intraday (1min) open, high, low, close prices and volume
-Symbol: MSFT
-Last Refreshed: 2023-09-08 19:59:00
-Interval: 1min
-Output Size: Compact
-Time Zone: US/Eastern
-
-Time                     Open           High           Low            Close          Volume         
-====================================================================================================
-2023-09-08 17:59:00      334.66         334.67         334.66         334.66         44             
-
-...
-
-Bollinger Bands (BBANDS)
-Symbol: MSFT
-Last Refreshed: 2023-09-08 19:59:00
-Interval: 1min
-Output Size: 
-Time Zone: 
-
-Time                    Real Upper Band Real Middle Band Real Lower Band
-=====================================================================
-2023-08-18 05:01:00              316.13         315.45         314.77
-
-...
+```go
+httpClient := &http.Client{Timeout: 10 * time.Second}
+cli := av.NewClientWithHTTPClient(apiKey, httpClient)
 ```
 
-This structure provides a readable display of the fetched data. With this, users can easily comprehend and process the obtained financial metrics.
+### Additional Examples
+
+```go
+// Symbol Search
+search, err := cli.CoreStocks().SymbolSearch("microsoft")
+
+// Crypto: Daily series
+cryptoDaily, err := cli.Crypto().Daily(types.CryptoDailyParams{Symbol: "BTC", Market: "USD"})
+
+// Forex: Exchange rate
+fx, err := cli.Forex().ExchangeRate(types.ForexExchangeRateParams{FromCurrency: "USD", ToCurrency: "EUR"})
+
+// Fundamental Data
+overview, err := cli.FundamentalData().CompanyOverview("IBM")
+
+// Alpha Inteligence: Analytics
+fixed, err := cli.AlphaInteligence().AnalyticsFixedWindow(types.AnalyticsFixedWindowParams{
+	Symbols:      "IBM,AAPL,MSFT",
+	Range:        []string{"2023-07-03", "2023-08-31"},
+	Interval:     "DAILY",
+	Calculations: "MEAN,STDDEV,CORRELATION",
+})
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- ROADMAP -->
+## Roadmap
+
+- Expand endpoint coverage across all Alpha Vantage categories
+- Add more fixtures and tests for service-level behavior
+
+See the [open issues][issues-url] for a list of proposed features (and known issues).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions are welcome. Please open an issue to discuss the change, then submit a PR.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- LICENSE -->
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+### Upstream Attribution (MIT Notice)
+
+This project is based on https://github.com/masonJamesWheeler/alpha-vantage-go-wrapper and includes a small portion of the original code.
+
+Copyright (c) 2023 Mason Wheeler. Used under the MIT License; the required copyright and permission notice is included in `LICENSE`.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- CONTACT -->
+## Contact
+
+Project Link: https://github.com/BeardedWonderDev/alpha-vantage-sdk-go
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+- [Alpha Vantage](https://www.alphavantage.co/documentation/)
+- [alpha-vantage-go-wrapper](https://github.com/masonJamesWheeler/alpha-vantage-go-wrapper) (MIT licensed)
+- [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/BeardedWonderDev/alpha-vantage-sdk-go.svg?style=for-the-badge
+[contributors-url]: https://github.com/BeardedWonderDev/alpha-vantage-sdk-go/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/BeardedWonderDev/alpha-vantage-sdk-go.svg?style=for-the-badge
+[forks-url]: https://github.com/BeardedWonderDev/alpha-vantage-sdk-go/network/members
+[stars-shield]: https://img.shields.io/github/stars/BeardedWonderDev/alpha-vantage-sdk-go.svg?style=for-the-badge
+[stars-url]: https://github.com/BeardedWonderDev/alpha-vantage-sdk-go/stargazers
+[issues-shield]: https://img.shields.io/github/issues/BeardedWonderDev/alpha-vantage-sdk-go.svg?style=for-the-badge
+[issues-url]: https://github.com/BeardedWonderDev/alpha-vantage-sdk-go/issues
+[license-shield]: https://img.shields.io/github/license/BeardedWonderDev/alpha-vantage-sdk-go.svg?style=for-the-badge
+[license-url]: https://github.com/BeardedWonderDev/alpha-vantage-sdk-go/blob/main/LICENSE
