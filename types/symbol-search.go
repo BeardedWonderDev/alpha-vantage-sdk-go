@@ -1,10 +1,5 @@
 package types
 
-// SymbolSearchParams defines parameters for the SYMBOL_SEARCH endpoint.
-type SymbolSearchParams struct {
-	Keywords string
-}
-
 // SymbolSearchResponse models the SYMBOL_SEARCH API response.
 type SymbolSearchResponse struct {
 	BestMatches []SymbolSearchMatch `json:"bestMatches"`

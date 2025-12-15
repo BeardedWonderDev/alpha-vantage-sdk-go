@@ -5,12 +5,6 @@ import (
 	"strings"
 )
 
-// CompanyOverviewParams defines the required parameters for the Alpha Vantage
-// company overview (function=OVERVIEW) endpoint.
-type CompanyOverviewParams struct {
-	Symbol string
-}
-
 // CompanyOverview models the response returned by the Alpha Vantage Company
 // Overview endpoint. Alpha Vantage returns most numeric values as strings, so
 // numeric-looking fields are parsed into typed numbers using the json ",string"

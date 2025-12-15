@@ -10,8 +10,8 @@ import (
 )
 
 // SymbolSearch retrieves the best-matching symbols and market information based on keywords.
-func (c *CoreStucksService) SymbolSearch(params types.SymbolSearchParams) (*types.SymbolSearchResponse, error) {
-	keywords := strings.TrimSpace(params.Keywords)
+func (c *CoreStucksService) SymbolSearch(keywords string) (*types.SymbolSearchResponse, error) {
+	keywords = strings.TrimSpace(keywords)
 	if keywords == "" {
 		return nil, fmt.Errorf("keywords is required")
 	}

@@ -10,13 +10,13 @@ import (
 
 // CompanyOverview retrieves the Alpha Vantage company overview for the given symbol.
 // The endpoint requires function=OVERVIEW and a stock symbol.
-func (c *FundamentalDataService) CompanyOverview(params types.CompanyOverviewParams) (*types.CompanyOverview, error) {
-	if params.Symbol == "" {
+func (c *FundamentalDataService) CompanyOverview(symbol string) (*types.CompanyOverview, error) {
+	if symbol == "" {
 		return nil, fmt.Errorf("symbol is required")
 	}
 
 	queryParams := url.Values{}
-	queryParams.Add("symbol", params.Symbol)
+	queryParams.Add("symbol", symbol)
 
 	data, err := c.client.Do("OVERVIEW", queryParams)
 	if err != nil {
@@ -29,7 +29,7 @@ func (c *FundamentalDataService) CompanyOverview(params types.CompanyOverviewPar
 	}
 
 	if overview.Symbol == "" {
-		return nil, fmt.Errorf("failed to retrieve company overview for symbol %s", params.Symbol)
+		return nil, fmt.Errorf("failed to retrieve company overview for symbol %s", symbol)
 	}
 
 	return &overview, nil

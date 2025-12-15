@@ -5,11 +5,6 @@ import (
 	"strings"
 )
 
-// ETFProfileParams defines the parameters for the ETF profile endpoint.
-type ETFProfileParams struct {
-	Symbol string
-}
-
 // ETFProfile represents the response for the ETF profile & holdings endpoint.
 type ETFProfile struct {
 	NetAssets         int64               `json:"net_assets,string"`

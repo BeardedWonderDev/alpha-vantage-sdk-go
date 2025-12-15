@@ -9,13 +9,13 @@ import (
 )
 
 // ETFProfile retrieves ETF profile and holdings for the given symbol.
-func (c *FundamentalDataService) ETFProfile(params types.ETFProfileParams) (*types.ETFProfile, error) {
-	if params.Symbol == "" {
+func (c *FundamentalDataService) ETFProfile(symbol string) (*types.ETFProfile, error) {
+	if symbol == "" {
 		return nil, fmt.Errorf("symbol is required")
 	}
 
 	queryParams := url.Values{}
-	queryParams.Add("symbol", params.Symbol)
+	queryParams.Add("symbol", symbol)
 
 	data, err := c.client.Do("ETF_PROFILE", queryParams)
 	if err != nil {

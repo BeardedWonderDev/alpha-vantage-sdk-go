@@ -20,7 +20,7 @@ type CoreStocks interface {
 	WeeklyAdjusted(params TimeSeriesParams) (TimeSeriesWeekly, error)
 	Monthly(params TimeSeriesParams) (TimeSeriesMonthly, error)
 	MonthlyAdjusted(params TimeSeriesParams) (TimeSeriesMonthlyAdjusted, error)
-	SymbolSearch(params SymbolSearchParams) (*SymbolSearchResponse, error)
+	SymbolSearch(keywords string) (*SymbolSearchResponse, error)
 }
 
 type OptionsData interface {
