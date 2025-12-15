@@ -2,7 +2,9 @@ package fundamentaldata
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/url"
+	"strings"
 
 	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/types"
 )
@@ -23,4 +25,28 @@ func (c *FundamentalDataService) Dividends(symbol string) (*types.DividendsRespo
 	}
 
 	return &divs, nil
+}
+
+// Splits retrieves historical split events for a symbol.
+// This method only supports datatype=json. For CSV output, use GetSplitsData.
+func (c *FundamentalDataService) Splits(symbol string) (*types.SplitsResponse, error) {
+	symbol = strings.TrimSpace(symbol)
+	if symbol == "" {
+		return nil, fmt.Errorf("symbol is required")
+	}
+
+	queryParams := url.Values{}
+	queryParams.Add("symbol", symbol)
+
+	data, err := c.client.Do("SPLITS", queryParams)
+	if err != nil {
+		return nil, err
+	}
+
+	var splits types.SplitsResponse
+	if err := json.Unmarshal(data, &splits); err != nil {
+		return nil, err
+	}
+
+	return &splits, nil
 }
