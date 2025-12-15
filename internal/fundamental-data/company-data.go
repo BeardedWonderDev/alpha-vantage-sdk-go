@@ -11,6 +11,7 @@ import (
 
 // CompanyOverview retrieves the Alpha Vantage company overview for the given symbol.
 func (c *FundamentalDataService) CompanyOverview(symbol string) (*types.CompanyOverviewResponse, error) {
+	symbol = strings.TrimSpace(symbol)
 	if symbol == "" {
 		return nil, fmt.Errorf("symbol is required")
 	}

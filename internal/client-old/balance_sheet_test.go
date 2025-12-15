@@ -12,7 +12,7 @@ import (
 )
 
 func TestGetBalanceSheet_SendsExpectedQueryAndParsesResponse(t *testing.T) {
-	fixture, err := os.ReadFile("../models/testdata/balance_sheet_IBM.json")
+	fixture, err := os.ReadFile("../../models/testdata/balance_sheet_IBM.json")
 	if err != nil {
 		t.Fatalf("failed to read fixture: %v", err)
 	}

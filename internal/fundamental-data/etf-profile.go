@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"strings"
 
 	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/types"
 )
 
 // ETFProfile retrieves ETF profile and holdings for the given symbol.
 func (c *FundamentalDataService) ETFProfile(symbol string) (*types.ETFProfile, error) {
+	symbol = strings.TrimSpace(symbol)
 	if symbol == "" {
 		return nil, fmt.Errorf("symbol is required")
 	}

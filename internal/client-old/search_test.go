@@ -18,7 +18,7 @@ func (f roundTripFunc) RoundTrip(r *http.Request) (*http.Response, error) {
 }
 
 func TestGetSymbolSearch_SendsExpectedQueryAndParsesResponse(t *testing.T) {
-	fixture, err := os.ReadFile("../models/testdata/symbol_search_sample.json")
+	fixture, err := os.ReadFile("../../models/testdata/symbol_search_sample.json")
 	if err != nil {
 		t.Fatalf("failed to read fixture: %v", err)
 	}

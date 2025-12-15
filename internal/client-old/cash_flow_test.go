@@ -12,7 +12,7 @@ import (
 )
 
 func TestGetCashFlow_SendsExpectedQueryAndParsesResponse(t *testing.T) {
-	fixture, err := os.ReadFile("../models/testdata/cash_flow_IBM.json")
+	fixture, err := os.ReadFile("../../models/testdata/cash_flow_IBM.json")
 	if err != nil {
 		t.Fatalf("failed to read fixture: %v", err)
 	}

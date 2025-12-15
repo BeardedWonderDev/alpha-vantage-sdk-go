@@ -8,7 +8,11 @@ import (
 	"net/url"
 	"strings"
 
+	alphainteligence "github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/alpha-inteligence"
 	corestocks "github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/core-stocks"
+	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/crypto"
+	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/forex"
+	fundamentaldata "github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/fundamental-data"
 	technicalindicators "github.com/masonJamesWheeler/alpha-vantage-go-wrapper/internal/technical-indicators"
 	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/types"
 )
@@ -40,19 +44,19 @@ func (c Client) OptionsData() types.OptionsData {
 }
 
 func (c Client) AlphaInteligence() types.AlphaInteligence {
-	return nil
+	return alphainteligence.NewAlphaInteligenceService(c)
 }
 
 func (c Client) FundamentalData() types.FundamentalData {
-	return nil
+	return fundamentaldata.NewFundamentalDataService(c)
 }
 
 func (c Client) Forex() types.Forex {
-	return nil
+	return forex.NewForexService(c)
 }
 
 func (c Client) Crypto() types.Crypto {
-	return nil
+	return crypto.NewCryptoService(c)
 }
 
 func (c Client) Commodities() types.Commodities {
@@ -72,8 +76,12 @@ func (c Client) Do(function string, params url.Values) ([]byte, error) {
 	query.Add("function", function)
 	query.Add("datatype", "json")
 
-	for key := range params {
-		query.Add(key, params.Get(key))
+	for key, values := range params {
+		for _, v := range values {
+			if strings.TrimSpace(v) != "" {
+				query.Add(key, v)
+			}
+		}
 	}
 
 	query.Add("apikey", c.apiKey)

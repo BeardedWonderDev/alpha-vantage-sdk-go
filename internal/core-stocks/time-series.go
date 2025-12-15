@@ -2,6 +2,8 @@ package corestocks
 
 import (
 	"encoding/json"
+	"fmt"
+	"strings"
 
 	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/types"
 )
@@ -9,6 +11,10 @@ import (
 // Intraday retrieves intraday data based on the provided parameters.
 // It returns a TimeSeriesIntraday and an error if there is any.
 func (c *CoreStucksService) Intraday(params types.TimeSeriesParams) (types.TimeSeriesIntraday, error) {
+	if strings.TrimSpace(params.Interval) == "" {
+		return types.TimeSeriesIntraday{}, fmt.Errorf("interval is required")
+	}
+
 	data, err := c.getTimeSeriesData("TIME_SERIES_INTRADAY", params)
 	if err != nil {
 		return types.TimeSeriesIntraday{}, err

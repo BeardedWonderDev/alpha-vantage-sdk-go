@@ -2,22 +2,33 @@ package corestocks
 
 import (
 	"encoding/json"
+	"fmt"
+	"net/url"
+	"strings"
 
 	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/types"
 )
 
 // Quote retrieves the quote endpoint based on the provided parameters.
 // It returns a Quote and an error if there is any.
-func (c *CoreStucksService) Quote(params types.TimeSeriesParams) (types.Quote, error) {
-	data, err := c.getTimeSeriesData("GLOBAL_QUOTE", params)
+func (c *CoreStucksService) Quote(symbol string) (types.Quote, error) {
+	symbol = strings.TrimSpace(symbol)
+	if symbol == "" {
+		return types.Quote{}, fmt.Errorf("symbol is required")
+	}
+
+	queryParams := url.Values{}
+	queryParams.Add("symbol", symbol)
+
+	data, err := c.client.Do("GLOBAL_QUOTE", queryParams)
 	if err != nil {
 		return types.Quote{}, err
 	}
 
 	var quote types.Quote
-	err = json.Unmarshal(data, &quote)
-	if err != nil {
+	if err := json.Unmarshal(data, &quote); err != nil {
 		return types.Quote{}, err
 	}
+
 	return quote, nil
 }

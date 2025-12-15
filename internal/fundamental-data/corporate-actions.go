@@ -11,6 +11,11 @@ import (
 
 // Dividends retrieves historical and declared dividends for a symbol.
 func (c *FundamentalDataService) Dividends(symbol string) (*types.DividendsResponse, error) {
+	symbol = strings.TrimSpace(symbol)
+	if symbol == "" {
+		return nil, fmt.Errorf("symbol is required")
+	}
+
 	queryParams := url.Values{}
 	queryParams.Add("symbol", symbol)
 
