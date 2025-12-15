@@ -1,7 +1,7 @@
 /*
 // Package models provides types and functions for working with Alpha Vantage crypto data.
 //
-// This file contains types and functions representing the interactions and responses 
+// This file contains types and functions representing the interactions and responses
 // for cryptocurrency data provided by the Alpha Vantage API.
 // For more information about Alpha Vantage API, see https://www.alphavantage.co/documentation/.
 
@@ -11,12 +11,12 @@ Author: Mason Wheeler
 package models
 
 import (
-	"time"
 	"encoding/json"
 	"fmt"
 	"sort"
-	"strings"
 	"strconv"
+	"strings"
+	"time"
 )
 
 type CryptoParams struct {
@@ -34,10 +34,10 @@ type CurrencyExchangeParams struct {
 }
 
 type CryptoExchangeRateParams struct {
-	Function      string
-	FromCurrency  string
-	ToCurrency    string
-	DataType      string
+	Function     string
+	FromCurrency string
+	ToCurrency   string
+	DataType     string
 }
 
 type CurrencyExchangeRateResponse struct {
@@ -45,15 +45,15 @@ type CurrencyExchangeRateResponse struct {
 }
 
 type ExchangeRateInfo struct {
-	FromCurrencyCode     string `json:"1. From_Currency Code"`
-	FromCurrencyName     string `json:"2. From_Currency Name"`
-	ToCurrencyCode       string `json:"3. To_Currency Code"`
-	ToCurrencyName       string `json:"4. To_Currency Name"`
-	ExchangeRate         string `json:"5. Exchange Rate"`
-	LastRefreshed        string `json:"6. Last Refreshed"`
-	TimeZone             string `json:"7. Time Zone"`
-	BidPrice             string `json:"8. Bid Price"`
-	AskPrice             string `json:"9. Ask Price"`
+	FromCurrencyCode string `json:"1. From_Currency Code"`
+	FromCurrencyName string `json:"2. From_Currency Name"`
+	ToCurrencyCode   string `json:"3. To_Currency Code"`
+	ToCurrencyName   string `json:"4. To_Currency Name"`
+	ExchangeRate     string `json:"5. Exchange Rate"`
+	LastRefreshed    string `json:"6. Last Refreshed"`
+	TimeZone         string `json:"7. Time Zone"`
+	BidPrice         string `json:"8. Bid Price"`
+	AskPrice         string `json:"9. Ask Price"`
 }
 
 type CryptoSeriesResponse struct {
@@ -183,7 +183,7 @@ func (c CryptoSeriesResponse) String() string {
 		}
 	}
 	sb.WriteString("\n")
-	sb.WriteString(strings.Repeat("=", 25 + 20*(len(headers)-1))) // Adjusting the "=" line length
+	sb.WriteString(strings.Repeat("=", 25+20*(len(headers)-1))) // Adjusting the "=" line length
 	sb.WriteString("\n")
 
 	// Loop through the TimeSeries slice
@@ -195,7 +195,6 @@ func (c CryptoSeriesResponse) String() string {
 
 	return sb.String()
 }
-
 
 // String function to nicely format the response for the Currency Exchange Rate API
 func (r CurrencyExchangeRateResponse) String() string {

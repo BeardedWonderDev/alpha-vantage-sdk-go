@@ -1,7 +1,7 @@
 /*
 // Package models provides types and functions for working with Alpha Vantage indicators data.
 //
-// This file contains types and functions representing the interactions and responses 
+// This file contains types and functions representing the interactions and responses
 // for technical indicators provided by the Alpha Vantage API.
 // For more information about Alpha Vantage API, see https://www.alphavantage.co/documentation/.
 
@@ -12,11 +12,11 @@ package models
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
 	"sort"
-	"strings"
 	"strconv"
+	"strings"
+	"time"
 )
 
 type IndicatorParams struct {
@@ -31,13 +31,13 @@ type IndicatorParams struct {
 }
 
 type IndicatorResponse struct {
-	MetaData   TimeSeriesMetaData `json:"Meta Data"`
-	IndicatorValues  []IndicatorValue   `json:"-"`
+	MetaData        TimeSeriesMetaData `json:"Meta Data"`
+	IndicatorValues []IndicatorValue   `json:"-"`
 }
 
 type IndicatorValue struct {
-    Timestamp time.Time            `json:"-"`
-    Values    map[string]float64   `json:"-"`
+	Timestamp time.Time          `json:"-"`
+	Values    map[string]float64 `json:"-"`
 }
 
 func UnmarshalIndicatorJSON(i *IndicatorResponse, data []byte, indicatorName string) error {
@@ -86,8 +86,8 @@ func UnmarshalIndicatorJSON(i *IndicatorResponse, data []byte, indicatorName str
 				Timestamp: timestamp,
 				Values:    valueMap,
 			})
-			}
 		}
+	}
 
 	// Sorting based on timestamps
 	sort.SliceStable(i.IndicatorValues, func(a, b int) bool {
@@ -121,7 +121,6 @@ func extractMetaData(rawData map[string]interface{}) TimeSeriesMetaData {
 	return metaData
 }
 
-
 func (i IndicatorResponse) String() string {
 	var sb strings.Builder
 
@@ -143,22 +142,22 @@ func (i IndicatorResponse) String() string {
 	}
 
 	// Print headers
-	sb.WriteString(fmt.Sprintf("%-24s", headers[0]))  // Set width for "Time"
+	sb.WriteString(fmt.Sprintf("%-24s", headers[0])) // Set width for "Time"
 	for _, header := range headers[1:] {
 		sb.WriteString(fmt.Sprintf("%-15s", header))
 	}
 	sb.WriteString("\n")
-	sb.WriteString(fmt.Sprintf("%-24s", strings.Repeat("=", 24)))  // Set width for "Time"
+	sb.WriteString(fmt.Sprintf("%-24s", strings.Repeat("=", 24))) // Set width for "Time"
 	sb.WriteString(strings.Repeat("=", 15*(len(headers)-1)))
 	sb.WriteString("\n")
 
 	// Loop through the Indicator slice
 	for _, v := range i.IndicatorValues {
 		timeStr := v.Timestamp.Format("2006-01-02 15:04:05")
-		sb.WriteString(fmt.Sprintf("%-24s", timeStr))  // Set width for "Time"
-		for _, header := range headers[1:] {  // Skip "Time"
+		sb.WriteString(fmt.Sprintf("%-24s", timeStr)) // Set width for "Time"
+		for _, header := range headers[1:] {          // Skip "Time"
 			sb.WriteString(fmt.Sprintf("%15.2f", v.Values[header]))
-	}
+		}
 		sb.WriteString("\n")
 	}
 

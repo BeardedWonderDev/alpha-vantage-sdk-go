@@ -1,7 +1,7 @@
 /*
 // Package models provides types and functions for working with Alpha Vantage time series data.
 //
-// This file contains types and functions representing the interactions and responses 
+// This file contains types and functions representing the interactions and responses
 // for time series data provided by the Alpha Vantage API.
 // For more information about Alpha Vantage API, see https://www.alphavantage.co/documentation/.
 
@@ -11,35 +11,34 @@ Author: Mason Wheeler
 package models
 
 import (
-	"strings"
 	"encoding/json"
 	"fmt"
-	"time"
 	"sort"
 	"strconv"
+	"strings"
+	"time"
 )
 
 // TimeSeriesMetaData represents the metadata for the time series data.
 type TimeSeriesMetaData struct {
-    Information       string `json:"1. Information"`
-    Symbol            string `json:"2. Symbol"`
-    LastRefreshed     string `json:"3. Last Refreshed"`
-    Interval          string `json:"4. Interval"`
-    OutputSize        string `json:"5. Output Size,omitempty"` // Note: using omitempty here and on other optional fields
-    TimeZone          string `json:"6. Time Zone"`
-    TimePeriod float64 `json:"5. Time Period,omitempty"`
-    SeriesType        string `json:"6. Series Type,omitempty"`
-    VolumeFactor      string `json:"6. Volume Factor (vFactor),omitempty"`
+	Information   string  `json:"1. Information"`
+	Symbol        string  `json:"2. Symbol"`
+	LastRefreshed string  `json:"3. Last Refreshed"`
+	Interval      string  `json:"4. Interval"`
+	OutputSize    string  `json:"5. Output Size,omitempty"` // Note: using omitempty here and on other optional fields
+	TimeZone      string  `json:"6. Time Zone"`
+	TimePeriod    float64 `json:"5. Time Period,omitempty"`
+	SeriesType    string  `json:"6. Series Type,omitempty"`
+	VolumeFactor  string  `json:"6. Volume Factor (vFactor),omitempty"`
 }
-
 
 // TimeSeriesParams represents the parameters for querying time series data
 type TimeSeriesParams struct {
-	Symbol        string
-	Interval      string
-	Month         interface{}
-	OutputSize    interface{}
-	DataType      interface{}
+	Symbol     string
+	Interval   string
+	Month      interface{}
+	OutputSize interface{}
+	DataType   interface{}
 }
 
 // OHLCV represents the Open, High, Low, Close, and Volume data for a given timestamp.
@@ -54,9 +53,9 @@ type OHLCV struct {
 
 // AdjustedOHLCV represents the Open, High, Low, Close, Adjusted Close, and Dividend data for a given timestamp.
 type AdjustedOHLCV struct {
-    OHLCV
-    AdjustedClose float64 `json:"5. adjusted close,string"`
-    Dividend      float64 `json:"7. dividend amount,string"`
+	OHLCV
+	AdjustedClose float64 `json:"5. adjusted close,string"`
+	Dividend      float64 `json:"7. dividend amount,string"`
 }
 
 // TimeSeriesIntraday represents the response for the Intraday data.
@@ -67,60 +66,60 @@ type TimeSeriesIntraday struct {
 
 // TimeSeriesDaily represents the response for the Daily data.
 type TimeSeriesDaily struct {
-    MetaData TimeSeriesMetaData           `json:"Meta Data"`
-    TimeSeries []OHLCV                    `json:"-"`
+	MetaData   TimeSeriesMetaData `json:"Meta Data"`
+	TimeSeries []OHLCV            `json:"-"`
 }
 
 // TimeSeriesDailyAdjusted represents the response for the Daily Adjusted data.
 type TimeSeriesDailyAdjusted struct {
-	MetaData TimeSeriesMetaData               `json:"Meta Data"`
-	TimeSeries []AdjustedOHLCV                `json:"-"`
+	MetaData   TimeSeriesMetaData `json:"Meta Data"`
+	TimeSeries []AdjustedOHLCV    `json:"-"`
 }
 
 // TimeSeriesWeekly represents the response for the Weekly data.
 type TimeSeriesWeekly struct {
-	MetaData TimeSeriesMetaData               `json:"Meta Data"`
-	TimeSeries []OHLCV                        `json:"-"`
+	MetaData   TimeSeriesMetaData `json:"Meta Data"`
+	TimeSeries []OHLCV            `json:"-"`
 }
 
 // TimeSeriesWeeklyAdjusted represents the response for the Weekly Adjusted data.
 type TimeSeriesWeeklyAdjusted struct {
-	MetaData TimeSeriesMetaData               `json:"Meta Data"`
-	TimeSeries []AdjustedOHLCV                `json:"-"`
+	MetaData   TimeSeriesMetaData `json:"Meta Data"`
+	TimeSeries []AdjustedOHLCV    `json:"-"`
 }
 
 // TimeSeriesMonthly represents the response for the Monthly data.
 type TimeSeriesMonthly struct {
-	MetaData TimeSeriesMetaData               `json:"Meta Data"`
-	TimeSeries []OHLCV                        `json:"-"`
+	MetaData   TimeSeriesMetaData `json:"Meta Data"`
+	TimeSeries []OHLCV            `json:"-"`
 }
 
 // TimeSeriesMonthlyAdjusted represents the response for the Monthly Adjusted data.
 type TimeSeriesMonthlyAdjusted struct {
-	MetaData TimeSeriesMetaData               `json:"Meta Data"`
-	TimeSeries []AdjustedOHLCV                `json:"-"`
+	MetaData   TimeSeriesMetaData `json:"Meta Data"`
+	TimeSeries []AdjustedOHLCV    `json:"-"`
 }
 
 // Quote represents the response for the Quote Endpoint Trending.
 type Quote struct {
-    Symbol    string  `json:"01. symbol"`
-    Open      float64 `json:"02. open,string"`
-    High      float64 `json:"03. high,string"`
-    Low       float64 `json:"04. low,string"`
-    Price     float64 `json:"05. price,string"`
-    Volume    int64   `json:"06. volume,string"`
-    LatestTradingDay time.Time `json:"07. latest trading day"`
-    PreviousClose    float64 `json:"08. previous close,string"`
-    Change           float64 `json:"09. change,string"`
-    ChangePercent    string  `json:"10. change percent"`
+	Symbol           string    `json:"01. symbol"`
+	Open             float64   `json:"02. open,string"`
+	High             float64   `json:"03. high,string"`
+	Low              float64   `json:"04. low,string"`
+	Price            float64   `json:"05. price,string"`
+	Volume           int64     `json:"06. volume,string"`
+	LatestTradingDay time.Time `json:"07. latest trading day"`
+	PreviousClose    float64   `json:"08. previous close,string"`
+	Change           float64   `json:"09. change,string"`
+	ChangePercent    string    `json:"10. change percent"`
 }
 
 // UnmarshalJSON is a custom unmarshaler for the TimeSeriesIntraday struct.
 func (t *TimeSeriesIntraday) UnmarshalJSON(data []byte) error {
-    var raw map[string]interface{}
-    if err := json.Unmarshal(data, &raw); err != nil {
- 	   return err
-    }
+	var raw map[string]interface{}
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
 
 	if metaData, ok := raw["Meta Data"].(map[string]interface{}); ok {
 		t.MetaData.Information = metaData["1. Information"].(string)
@@ -169,136 +168,136 @@ func (t *TimeSeriesIntraday) UnmarshalJSON(data []byte) error {
 
 // UnmarshalJSON is a custom unmarshaler for the TimeSeriesDaily struct.
 func (ts *TimeSeriesDaily) UnmarshalJSON(data []byte) error {
-    // Define a helper struct to use the default unmarshal
-    type Alias TimeSeriesDaily
-    aux := &struct {
-        RawTimeSeries map[string]OHLCV `json:"Time Series (Daily)"`
-        *Alias
-    }{
-        Alias: (*Alias)(ts),
-    }
+	// Define a helper struct to use the default unmarshal
+	type Alias TimeSeriesDaily
+	aux := &struct {
+		RawTimeSeries map[string]OHLCV `json:"Time Series (Daily)"`
+		*Alias
+	}{
+		Alias: (*Alias)(ts),
+	}
 
-    // Unmarshal the data into the helper struct
-    if err := json.Unmarshal(data, &aux); err != nil {
-        return err
-    }
+	// Unmarshal the data into the helper struct
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
 
-    // Convert the irregular map into a slice
-    ts.TimeSeries = make([]OHLCV, 0, len(aux.RawTimeSeries))
-    for dateStr, ohlcv := range aux.RawTimeSeries {
-        t, err := time.Parse("2006-01-02", dateStr)
-        if err != nil {
-            return err
-        }
-        ohlcv.Timestamp = t
-        ts.TimeSeries = append(ts.TimeSeries, ohlcv)
-    }
+	// Convert the irregular map into a slice
+	ts.TimeSeries = make([]OHLCV, 0, len(aux.RawTimeSeries))
+	for dateStr, ohlcv := range aux.RawTimeSeries {
+		t, err := time.Parse("2006-01-02", dateStr)
+		if err != nil {
+			return err
+		}
+		ohlcv.Timestamp = t
+		ts.TimeSeries = append(ts.TimeSeries, ohlcv)
+	}
 
-    // Sort the time series based on the timestamp
-    sort.Slice(ts.TimeSeries, func(i, j int) bool {
-        return ts.TimeSeries[i].Timestamp.Before(ts.TimeSeries[j].Timestamp)
-    })
+	// Sort the time series based on the timestamp
+	sort.Slice(ts.TimeSeries, func(i, j int) bool {
+		return ts.TimeSeries[i].Timestamp.Before(ts.TimeSeries[j].Timestamp)
+	})
 
-    return nil
+	return nil
 }
 
 // UnmarshalJSON is a custom unmarshaler for the TimeSeriesDailyAdjusted struct.
 func (ts *TimeSeriesDailyAdjusted) UnmarshalJSON(data []byte) error {
-    // Define a helper struct to use the default unmarshal
-    type Alias TimeSeriesDailyAdjusted
-    aux := &struct {
-        RawTimeSeries map[string]AdjustedOHLCV `json:"Time Series (Daily Adjusted)"`
-        *Alias
-    }{
-        Alias: (*Alias)(ts),
-    }
+	// Define a helper struct to use the default unmarshal
+	type Alias TimeSeriesDailyAdjusted
+	aux := &struct {
+		RawTimeSeries map[string]AdjustedOHLCV `json:"Time Series (Daily Adjusted)"`
+		*Alias
+	}{
+		Alias: (*Alias)(ts),
+	}
 
-    // Unmarshal the data into the helper struct
-    if err := json.Unmarshal(data, &aux); err != nil {
-        return err
-    }
+	// Unmarshal the data into the helper struct
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
 
-    // Convert the irregular map into a slice
-    ts.TimeSeries = make([]AdjustedOHLCV, 0, len(aux.RawTimeSeries))
-    for dateStr, ohlcv := range aux.RawTimeSeries {
-        t, err := time.Parse("2006-01-02", dateStr)
-        if err != nil {
-            return err
-        }
-        ohlcv.Timestamp = t
-        ts.TimeSeries = append(ts.TimeSeries, ohlcv)
-    }
+	// Convert the irregular map into a slice
+	ts.TimeSeries = make([]AdjustedOHLCV, 0, len(aux.RawTimeSeries))
+	for dateStr, ohlcv := range aux.RawTimeSeries {
+		t, err := time.Parse("2006-01-02", dateStr)
+		if err != nil {
+			return err
+		}
+		ohlcv.Timestamp = t
+		ts.TimeSeries = append(ts.TimeSeries, ohlcv)
+	}
 
-    // Sort the time series based on the timestamp
-    sort.Slice(ts.TimeSeries, func(i, j int) bool {
-        return ts.TimeSeries[i].Timestamp.Before(ts.TimeSeries[j].Timestamp)
-    })
+	// Sort the time series based on the timestamp
+	sort.Slice(ts.TimeSeries, func(i, j int) bool {
+		return ts.TimeSeries[i].Timestamp.Before(ts.TimeSeries[j].Timestamp)
+	})
 
-    return nil
+	return nil
 }
 
 // UnmarshalJSON is a custom unmarshaler for the TimeSeriesWeekly struct.
 func (ts *TimeSeriesWeekly) UnmarshalJSON(data []byte) error {
-    // Define a helper struct to use the default unmarshal
-    type Alias TimeSeriesWeekly
-    aux := &struct {
-        RawTimeSeries map[string]OHLCV `json:"Weekly Time Series"`
-        *Alias
-    }{
-        Alias: (*Alias)(ts),
-    }
+	// Define a helper struct to use the default unmarshal
+	type Alias TimeSeriesWeekly
+	aux := &struct {
+		RawTimeSeries map[string]OHLCV `json:"Weekly Time Series"`
+		*Alias
+	}{
+		Alias: (*Alias)(ts),
+	}
 
-    if err := json.Unmarshal(data, &aux); err != nil {
-        return err
-    }
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
 
-    ts.TimeSeries = make([]OHLCV, 0, len(aux.RawTimeSeries))
-    for dateStr, ohlcv := range aux.RawTimeSeries {
-        t, err := time.Parse("2006-01-02", dateStr)
-        if err != nil {
-            return err
-        }
-        ohlcv.Timestamp = t
-        ts.TimeSeries = append(ts.TimeSeries, ohlcv)
-    }
+	ts.TimeSeries = make([]OHLCV, 0, len(aux.RawTimeSeries))
+	for dateStr, ohlcv := range aux.RawTimeSeries {
+		t, err := time.Parse("2006-01-02", dateStr)
+		if err != nil {
+			return err
+		}
+		ohlcv.Timestamp = t
+		ts.TimeSeries = append(ts.TimeSeries, ohlcv)
+	}
 
-    sort.Slice(ts.TimeSeries, func(i, j int) bool {
-        return ts.TimeSeries[i].Timestamp.Before(ts.TimeSeries[j].Timestamp)
-    })
+	sort.Slice(ts.TimeSeries, func(i, j int) bool {
+		return ts.TimeSeries[i].Timestamp.Before(ts.TimeSeries[j].Timestamp)
+	})
 
-    return nil
+	return nil
 }
 
 // UnmarshalJSON is a custom unmarshaler for the TimeSeriesWeeklyAdjusted struct.
 func (ts *TimeSeriesWeeklyAdjusted) UnmarshalJSON(data []byte) error {
-    // Define a helper struct to use the default unmarshal
-    type Alias TimeSeriesWeeklyAdjusted
-    aux := &struct {
-        RawTimeSeries map[string]AdjustedOHLCV `json:"Weekly Adjusted Time Series"`
-        *Alias
-    }{
-        Alias: (*Alias)(ts),
-    }
+	// Define a helper struct to use the default unmarshal
+	type Alias TimeSeriesWeeklyAdjusted
+	aux := &struct {
+		RawTimeSeries map[string]AdjustedOHLCV `json:"Weekly Adjusted Time Series"`
+		*Alias
+	}{
+		Alias: (*Alias)(ts),
+	}
 
-    if err := json.Unmarshal(data, &aux); err != nil {
-        return err
-    }
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
 
-    ts.TimeSeries = make([]AdjustedOHLCV, 0, len(aux.RawTimeSeries))
-    for dateStr, ohlcv := range aux.RawTimeSeries {
-        t, err := time.Parse("2006-01-02", dateStr)
-        if err != nil {
-            return err
-        }
-        ohlcv.Timestamp = t
-        ts.TimeSeries = append(ts.TimeSeries, ohlcv)
-    }
+	ts.TimeSeries = make([]AdjustedOHLCV, 0, len(aux.RawTimeSeries))
+	for dateStr, ohlcv := range aux.RawTimeSeries {
+		t, err := time.Parse("2006-01-02", dateStr)
+		if err != nil {
+			return err
+		}
+		ohlcv.Timestamp = t
+		ts.TimeSeries = append(ts.TimeSeries, ohlcv)
+	}
 
-    sort.Slice(ts.TimeSeries, func(i, j int) bool {
-        return ts.TimeSeries[i].Timestamp.Before(ts.TimeSeries[j].Timestamp)
-    })
+	sort.Slice(ts.TimeSeries, func(i, j int) bool {
+		return ts.TimeSeries[i].Timestamp.Before(ts.TimeSeries[j].Timestamp)
+	})
 
-    return nil
+	return nil
 }
 
 // UnmarshalJSON is a custom unmarshaler for the TimeSeriesMonthly struct.
@@ -436,7 +435,6 @@ func (q *Quote) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-
 // Length returns the count of time series data entries.
 func (t *TimeSeriesIntraday) Length() int {
 	return len(t.TimeSeries)
@@ -487,12 +485,12 @@ func (t TimeSeriesIntraday) String() string {
 
 	// Define headers for the dataframe-style table
 	headers := []string{"Time", "Open", "High", "Low", "Close", "Volume"}
-	sb.WriteString(fmt.Sprintf("%-25s", headers[0]))  // Increase width for Time
+	sb.WriteString(fmt.Sprintf("%-25s", headers[0])) // Increase width for Time
 	for _, header := range headers[1:] {
 		sb.WriteString(fmt.Sprintf("%-15s", header)) // Left-justify each header with a width of 20
 	}
 	sb.WriteString("\n")
-	sb.WriteString(strings.Repeat("=", 25 + (len(headers)-1)*15))  // Print line separator based on widths
+	sb.WriteString(strings.Repeat("=", 25+(len(headers)-1)*15)) // Print line separator based on widths
 	sb.WriteString("\n")
 
 	// Loop through the TimeSeries slice
@@ -518,12 +516,12 @@ func (t TimeSeriesDaily) String() string {
 
 	// Define headers for the dataframe-style table
 	headers := []string{"Time", "Open", "High", "Low", "Close", "Volume"}
-	sb.WriteString(fmt.Sprintf("%-25s", headers[0]))  // Increase width for Time
+	sb.WriteString(fmt.Sprintf("%-25s", headers[0])) // Increase width for Time
 	for _, header := range headers[1:] {
 		sb.WriteString(fmt.Sprintf("%-15s", header)) // Left-justify each header with a width of 20
 	}
 	sb.WriteString("\n")
-	sb.WriteString(strings.Repeat("=", 25 + (len(headers)-1)*15))  // Print line separator based on widths
+	sb.WriteString(strings.Repeat("=", 25+(len(headers)-1)*15)) // Print line separator based on widths
 	sb.WriteString("\n")
 
 	// Loop through the TimeSeries slice
@@ -549,12 +547,12 @@ func (t TimeSeriesDailyAdjusted) String() string {
 
 	// Define headers for the dataframe-style table
 	headers := []string{"Time", "Open", "High", "Low", "Close", "Adjusted Close", "Volume", "Dividend"}
-	sb.WriteString(fmt.Sprintf("%-25s", headers[0]))  // Increase width for Time
+	sb.WriteString(fmt.Sprintf("%-25s", headers[0])) // Increase width for Time
 	for _, header := range headers[1:] {
 		sb.WriteString(fmt.Sprintf("%-15s", header)) // Left-justify each header with a width of 20
 	}
 	sb.WriteString("\n")
-	sb.WriteString(strings.Repeat("=", 25 + (len(headers)-1)*15))  // Print line separator based on widths
+	sb.WriteString(strings.Repeat("=", 25+(len(headers)-1)*15)) // Print line separator based on widths
 	sb.WriteString("\n")
 
 	// Loop through the TimeSeries slice
@@ -580,12 +578,12 @@ func (t TimeSeriesWeekly) String() string {
 
 	// Define headers for the dataframe-style table
 	headers := []string{"Time", "Open", "High", "Low", "Close", "Volume"}
-	sb.WriteString(fmt.Sprintf("%-25s", headers[0]))  // Increase width for Time
+	sb.WriteString(fmt.Sprintf("%-25s", headers[0])) // Increase width for Time
 	for _, header := range headers[1:] {
 		sb.WriteString(fmt.Sprintf("%-15s", header)) // Left-justify each header with a width of 20
 	}
 	sb.WriteString("\n")
-	sb.WriteString(strings.Repeat("=", 25 + (len(headers)-1)*15))  // Print line separator based on widths
+	sb.WriteString(strings.Repeat("=", 25+(len(headers)-1)*15)) // Print line separator based on widths
 	sb.WriteString("\n")
 
 	// Loop through the TimeSeries slice
@@ -611,12 +609,12 @@ func (t TimeSeriesWeeklyAdjusted) String() string {
 
 	// Define headers for the dataframe-style table
 	headers := []string{"Time", "Open", "High", "Low", "Close", "Adjusted Close", "Volume", "Dividend"}
-	sb.WriteString(fmt.Sprintf("%-25s", headers[0]))  // Increase width for Time
+	sb.WriteString(fmt.Sprintf("%-25s", headers[0])) // Increase width for Time
 	for _, header := range headers[1:] {
 		sb.WriteString(fmt.Sprintf("%-15s", header)) // Left-justify each header with a width of 20
 	}
 	sb.WriteString("\n")
-	sb.WriteString(strings.Repeat("=", 25 + (len(headers)-1)*15))  // Print line separator based on widths
+	sb.WriteString(strings.Repeat("=", 25+(len(headers)-1)*15)) // Print line separator based on widths
 	sb.WriteString("\n")
 
 	// Loop through the TimeSeries slice
@@ -642,12 +640,12 @@ func (t TimeSeriesMonthly) String() string {
 
 	// Define headers for the dataframe-style table
 	headers := []string{"Time", "Open", "High", "Low", "Close", "Volume"}
-	sb.WriteString(fmt.Sprintf("%-25s", headers[0]))  // Increase width for Time
+	sb.WriteString(fmt.Sprintf("%-25s", headers[0])) // Increase width for Time
 	for _, header := range headers[1:] {
 		sb.WriteString(fmt.Sprintf("%-15s", header)) // Left-justify each header with a width of 20
 	}
 	sb.WriteString("\n")
-	sb.WriteString(strings.Repeat("=", 25 + (len(headers)-1)*15))  // Print line separator based on widths
+	sb.WriteString(strings.Repeat("=", 25+(len(headers)-1)*15)) // Print line separator based on widths
 	sb.WriteString("\n")
 
 	// Loop through the TimeSeries slice
@@ -673,12 +671,12 @@ func (t TimeSeriesMonthlyAdjusted) String() string {
 
 	// Define headers for the dataframe-style table
 	headers := []string{"Time", "Open", "High", "Low", "Close", "Adjusted Close", "Volume", "Dividend"}
-	sb.WriteString(fmt.Sprintf("%-25s", headers[0]))  // Increase width for Time
+	sb.WriteString(fmt.Sprintf("%-25s", headers[0])) // Increase width for Time
 	for _, header := range headers[1:] {
 		sb.WriteString(fmt.Sprintf("%-15s", header)) // Left-justify each header with a width of 20
 	}
 	sb.WriteString("\n")
-	sb.WriteString(strings.Repeat("=", 25 + (len(headers)-1)*15))  // Print line separator based on widths
+	sb.WriteString(strings.Repeat("=", 25+(len(headers)-1)*15)) // Print line separator based on widths
 	sb.WriteString("\n")
 
 	// Loop through the TimeSeries slice
