@@ -28,7 +28,6 @@ func (c *FundamentalDataService) Dividends(symbol string) (*types.DividendsRespo
 }
 
 // Splits retrieves historical split events for a symbol.
-// This method only supports datatype=json. For CSV output, use GetSplitsData.
 func (c *FundamentalDataService) Splits(symbol string) (*types.SplitsResponse, error) {
 	symbol = strings.TrimSpace(symbol)
 	if symbol == "" {
