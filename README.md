@@ -6,6 +6,8 @@
 
 A lightweight, dependency-free Go client for the [Alpha Vantage](https://www.alphavantage.co/) REST API. It exposes typed request/response structs for equities, crypto, technical indicators, and fundamentals while keeping a consistent, ergonomic interface.
 
+** NOTE: ** Client only supports JSON responses at this time
+
 ## Table of Contents
 - [Quick Start](#quick-start)
 - [Installation](#installation)

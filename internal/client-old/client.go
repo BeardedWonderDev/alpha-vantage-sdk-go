@@ -18,11 +18,12 @@ package client
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/models"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/masonJamesWheeler/alpha-vantage-go-wrapper/models"
 )
 
 const alphaVantageURL = "https://www.alphavantage.co/query"
