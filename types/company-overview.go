@@ -5,11 +5,11 @@ import (
 	"strings"
 )
 
-// CompanyOverview models the response returned by the Alpha Vantage Company
+// CompanyOverviewResponse models the response returned by the Alpha Vantage Company
 // Overview endpoint. Alpha Vantage returns most numeric values as strings, so
 // numeric-looking fields are parsed into typed numbers using the json ",string"
 // tag pattern used elsewhere in the models package.
-type CompanyOverview struct {
+type CompanyOverviewResponse struct {
 	Symbol                     string  `json:"Symbol"`
 	AssetType                  string  `json:"AssetType"`
 	Name                       string  `json:"Name"`
@@ -68,7 +68,7 @@ type CompanyOverview struct {
 }
 
 // String returns a succinct, human-readable summary of key overview metrics.
-func (o CompanyOverview) String() string {
+func (o CompanyOverviewResponse) String() string {
 	var sb strings.Builder
 
 	sb.WriteString(fmt.Sprintf("%s (%s)\n", o.Name, o.Symbol))

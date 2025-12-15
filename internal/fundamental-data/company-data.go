@@ -10,7 +10,7 @@ import (
 )
 
 // CompanyOverview retrieves the Alpha Vantage company overview for the given symbol.
-func (c *FundamentalDataService) CompanyOverview(symbol string) (*types.CompanyOverview, error) {
+func (c *FundamentalDataService) CompanyOverview(symbol string) (*types.CompanyOverviewResponse, error) {
 	if symbol == "" {
 		return nil, fmt.Errorf("symbol is required")
 	}
@@ -23,7 +23,7 @@ func (c *FundamentalDataService) CompanyOverview(symbol string) (*types.CompanyO
 		return nil, err
 	}
 
-	var overview types.CompanyOverview
+	var overview types.CompanyOverviewResponse
 	if err := json.Unmarshal(data, &overview); err != nil {
 		return nil, err
 	}

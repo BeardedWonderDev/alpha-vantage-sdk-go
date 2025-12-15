@@ -30,6 +30,10 @@ type AlphaInteligence interface {
 }
 
 type FundamentalData interface {
+	CompanyOverview(symbol string) (*CompanyOverviewResponse, error)
+	IncomeStatement(symbol string) (*IncomeStatementResponse, error)
+	BalanceSheet(symbol string) (*BalanceSheetResponse, error)
+	CashFlow(symbol string) (*CashFlowResponse, error)
 }
 
 type Forex interface {
