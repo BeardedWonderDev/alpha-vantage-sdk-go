@@ -1,34 +1,102 @@
-# Alpha Vantage Go Wrapper
+<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+<a id="readme-top"></a>
 
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![Version: v1.0.0](https://img.shields.io/badge/version-v1.0.0-blue)
+<!-- PROJECT SHIELDS -->
+<!--
+I'm using markdown "reference style" links for readability.
+Reference links are enclosed in brackets [ ] instead of parentheses ( ).
+See the bottom of this document for the declaration of the reference variables.
+-->
 
-A lightweight, dependency-free Go client for the [Alpha Vantage](https://www.alphavantage.co/) REST API. It exposes typed request/response structs for equities, crypto, technical indicators, and fundamentals while keeping a consistent, ergonomic interface.
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
 
-** NOTE: ** Client only supports JSON responses at this time
+<!-- PROJECT HEADER -->
+<br />
+<div align="center">
+  <h3 align="center">alpha-vantage-sdk-go</h3>
 
-## Table of Contents
-- [Quick Start](#quick-start)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Usage Examples](#usage-examples)
-- [Endpoint Coverage](#endpoint-coverage)
-  - [Alpha Intelligence](#alpha-intelligence)
-  - [Fundamental Data](#fundamental-data)
-- [Output Format](#output-format)
-- [Development](#development)
-- [License](#license)
-- [Contact](#contact)
+  <p align="center">
+    A lightweight, dependency-free Go SDK for the Alpha Vantage REST API with typed requests/responses and domain-oriented services.
+    <br />
+    <a href="https://github.com/BeardedWonderDev/alpha-vantage-sdk-go"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/BeardedWonderDev/alpha-vantage-sdk-go/issues/new?labels=bug">Report Bug</a>
+    &middot;
+    <a href="https://github.com/BeardedWonderDev/alpha-vantage-sdk-go/issues/new?labels=enhancement">Request Feature</a>
+  </p>
+</div>
 
-## Quick Start
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
 
-```bash
-export ALPHAVANTAGE_API_KEY=your_api_key
-go test ./...   # optional: verifies your environment
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+`alpha-vantage-sdk-go` is a Go SDK for the [Alpha Vantage](https://www.alphavantage.co/) REST API. The package is organized by domain services (e.g. `CoreStocks`, `Crypto`, `Forex`) and returns strongly typed response structs.
+
+Key characteristics:
+
+- Dependency-free (standard library only)
+- JSON-only (the client enforces `datatype=json`)
+- Domain-oriented services from a single client
+- Alpha Vantage informational/error payloads are surfaced as Go errors
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Built With
+
+- [Go](https://go.dev/)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+### Prerequisites
+
+- Go 1.21+
+- An Alpha Vantage API key (get one at https://www.alphavantage.co/support/#api-key)
+
+### Installation
+
+```sh
+go get github.com/BeardedWonderDev/alpha-vantage-sdk-go
 ```
 
-Embed in your app:
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- USAGE EXAMPLES -->
+## Usage
+
+Create a client and call domain services:
 
 ```go
 package main
@@ -45,7 +113,8 @@ import (
 func main() {
 	cli := av.NewClient(os.Getenv("ALPHAVANTAGE_API_KEY"))
 
-	ts, err := cli.CoreStocks().Intraday(types.TimeSeriesParams{
+	// Core Stocks: Intraday time series
+	intraday, err := cli.CoreStocks().Intraday(types.TimeSeriesParams{
 		Symbol:     "MSFT",
 		Interval:   "5min",
 		OutputSize: "compact",
@@ -53,77 +122,53 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(intraday)
 
-	fmt.Println(ts) // pretty String() output
+	// Core Stocks: Quote
+	quote, err := cli.CoreStocks().Quote("MSFT")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(quote)
+
+	// Technical Indicators: BBANDS
+	bbands, err := cli.TechnicalIndicators().BBANDS(types.IndicatorParams{
+		Symbol:     "MSFT",
+		Interval:   "15min",
+		TimePeriod: 20,
+		SeriesType: "close",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(bbands)
 }
 ```
 
-## Installation
-
-- Go **1.21+** required.
-- Add the module:
-
-```bash
-go get github.com/BeardedWonderDev/alpha-vantage-sdk-go
-```
-
-Import packages:
+### Custom HTTP Client
 
 ```go
-import (
-	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/av"
-	"github.com/BeardedWonderDev/alpha-vantage-sdk-go/types"
-)
+httpClient := &http.Client{Timeout: 10 * time.Second}
+cli := av.NewClientWithHTTPClient(apiKey, httpClient)
 ```
 
-## Configuration
+### Additional Examples
 
-- **API key**: recommended via `ALPHAVANTAGE_API_KEY` env var; you can also pass the raw string to `av.NewClient`.
-- **Data format**: JSON only (the client enforces `datatype=json`).
-- **Rate limits**: the client surfaces Alpha Vantage informational/error messages (e.g., throttling) as Go errors; it does not auto-retry.
-
-## Usage Examples
-
-The SDK is organized by domain: `CoreStocks()`, `Crypto()`, `Forex()`, `TechnicalIndicators()`, `FundamentalData()`, and `AlphaInteligence()`.
-
-### Time Series
 ```go
-daily, err := cli.CoreStocks().DailyAdjusted(types.TimeSeriesParams{
-	Symbol:     "AAPL",
-	OutputSize: "full", // or "compact"
-})
-```
+// Symbol Search
+search, err := cli.CoreStocks().SymbolSearch("microsoft")
 
-### Cryptocurrency
-```go
-btc, err := cli.Crypto().Daily(types.CryptoDailyParams{Symbol: "BTC", Market: "USD"})
-```
+// Crypto: Daily series
+cryptoDaily, err := cli.Crypto().Daily(types.CryptoDailyParams{Symbol: "BTC", Market: "USD"})
 
-### Technical Indicators
-```go
-bb, err := cli.TechnicalIndicators().BBANDS(types.IndicatorParams{
-	Symbol:     "MSFT",
-	Interval:   "15min",
-	TimePeriod: 20,
-	SeriesType: "close",
-})
-```
+// Forex: Exchange rate
+fx, err := cli.Forex().ExchangeRate(types.ForexExchangeRateParams{FromCurrency: "USD", ToCurrency: "EUR"})
 
-### Fundamentals & Analytics
-```go
-overview, _ := cli.FundamentalData().CompanyOverview("IBM")
-etf, _ := cli.FundamentalData().ETFProfile("QQQ")
-divs, _ := cli.FundamentalData().Dividends("IBM")
+// Fundamental Data
+overview, err := cli.FundamentalData().CompanyOverview("IBM")
 
-analytics, _ := cli.AlphaInteligence().AnalyticsSlidingWindow(types.AnalyticsSlidingWindowParams{
-	Symbols:      "AAPL,IBM",
-	Range:        []string{"2month"},
-	Interval:     "DAILY",
-	WindowSize:   20,
-	Calculations: "MEAN,STDDEV(annualized=true)",
-})
-
-fixed, _ := cli.AlphaInteligence().AnalyticsFixedWindow(types.AnalyticsFixedWindowParams{
+// Alpha Inteligence: Analytics
+fixed, err := cli.AlphaInteligence().AnalyticsFixedWindow(types.AnalyticsFixedWindowParams{
 	Symbols:      "IBM,AAPL,MSFT",
 	Range:        []string{"2023-07-03", "2023-08-31"},
 	Interval:     "DAILY",
@@ -131,104 +176,56 @@ fixed, _ := cli.AlphaInteligence().AnalyticsFixedWindow(types.AnalyticsFixedWind
 })
 ```
 
-### Symbol Search
-```go
-search, err := cli.CoreStocks().SymbolSearch("microsoft")
-if err != nil {
-	log.Fatal(err)
-}
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-for _, match := range search.BestMatches {
-	fmt.Printf("%s - %s (%s) score=%0.4f\n", match.Symbol, match.Name, match.Region, match.MatchScore)
-}
-```
+<!-- ROADMAP -->
+## Roadmap
 
-## Endpoint Coverage
+- Expand endpoint coverage across all Alpha Vantage categories
+- Add more fixtures and tests for service-level behavior
 
-### Time Series (equities): 
+See the [open issues][issues-url] for a list of proposed features (and known issues).
 
-- Intraday
-- Daily
-- Daily Adjusted
-- Weekly
-- Weekly Adjusted
-- Monthly
-- Monthly Adjusted
-- Global Quote
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Cryptocurrencies: 
+<!-- CONTRIBUTING -->
+## Contributing
 
-- Intraday
-- Daily
-- Weekly
-- Monthly
-- Exchange Rates
+Contributions are welcome. Please open an issue to discuss the change, then submit a PR.
 
-### Technical Indicators: 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-- SMA/EMA/WMA/DEMA/TEMA/TRIMA/KAMA/MAMA/VWAP/T3
-- MACD/MACDEXT
-- TOCH/STOCHF
-- RSI/STOCHRSI/WILLR
-- ADX/ADXR
-- AROON/AROONOSC
-- BBANDS
-- AD/ADOSC
-- OBV
-- CCI/CMO
-- MIDPOINT/MIDPRICE
-- SAR
-- TRANGE/ATR/NATR
-- ROC/ROCR
-- MOM/BOP/APO/PPO
-- MFI/TRIX/ULTOSC
-- DX/MINUS_DI/PLUS_DI/MINUS_DM/PLUS_DM
-- HT_* family
-
-### Alpha Intelligence
-
-- News & Sentiments `[planned]`
-- Earnings Call Transcript `[planned]`
-- Top Gainers & Losers `[planned]`
-- Insider Transactions `[planned]`
-- Analytics (Fixed Window)
-- Analytics (Sliding Window)
-
-### Fundamental Data
-
-- Company Overview
-- ETF Profile & Holdings
-- Corporate Action - Dividends
-- Corporate Action - Splits
-- Income Statement
-- Balance Sheet
-- Cash Flow
-- Shares Outstanding `[planned]`
-- Earnings History `[planned]`
-- Earnings Estimates `[planned]`
-- Listing & Delisting Status `[planned]`
-- Earnings Calendar `[planned]`
-- IPO Calendar `[planned]`
-
-Each endpoint has a dedicated params struct in `models` and a matching `Client` method. Planned items will follow the same pattern when added.
-
-## Output Format
-
-- All response types implement `String()` for terminal-friendly tables with deterministic ordering (maps normalized to slices).
-- For structured access, use the fields on the returned structs (e.g., `TimeSeriesDaily.Metadata`, `TimeSeriesDaily.Data`).
-- Errors from Alpha Vantage (notes, rate limits, premium notices) are returned as Go errors.
-
-## Development
-
-- Keep the library dependency-free.
-- Run `go test ./...` before submitting changes.
-- Format and vet touched files: `gofmt -w` and `go vet ./...`.
-
+<!-- LICENSE -->
 ## License
 
-MIT License. See `LICENSE` for details.
+Distributed under the MIT License. See `LICENSE` for more information.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- CONTACT -->
 ## Contact
 
-- Issues & features: GitHub issues on this repo.
-- Maintainer: masonJamesWheeler (GitHub).
+Project Link: https://github.com/BeardedWonderDev/alpha-vantage-sdk-go
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+- [Alpha Vantage](https://www.alphavantage.co/documentation/)
+- [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/BeardedWonderDev/alpha-vantage-sdk-go.svg?style=for-the-badge
+[contributors-url]: https://github.com/BeardedWonderDev/alpha-vantage-sdk-go/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/BeardedWonderDev/alpha-vantage-sdk-go.svg?style=for-the-badge
+[forks-url]: https://github.com/BeardedWonderDev/alpha-vantage-sdk-go/network/members
+[stars-shield]: https://img.shields.io/github/stars/BeardedWonderDev/alpha-vantage-sdk-go.svg?style=for-the-badge
+[stars-url]: https://github.com/BeardedWonderDev/alpha-vantage-sdk-go/stargazers
+[issues-shield]: https://img.shields.io/github/issues/BeardedWonderDev/alpha-vantage-sdk-go.svg?style=for-the-badge
+[issues-url]: https://github.com/BeardedWonderDev/alpha-vantage-sdk-go/issues
+[license-shield]: https://img.shields.io/github/license/BeardedWonderDev/alpha-vantage-sdk-go.svg?style=for-the-badge
+[license-url]: https://github.com/BeardedWonderDev/alpha-vantage-sdk-go/blob/main/LICENSE
