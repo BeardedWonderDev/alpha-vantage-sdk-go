@@ -89,3 +89,31 @@ func (c *FundamentalDataService) BalanceSheet(symbol string) (*types.BalanceShee
 
 	return &sheet, nil
 }
+
+// CashFlow retrieves annual and quarterly cash flow statements for the given symbol.
+// The endpoint requires function=CASH_FLOW and a stock symbol.
+func (c *FundamentalDataService) CashFlow(symbol string) (*types.CashFlowResponse, error) {
+	symbol = strings.TrimSpace(symbol)
+	if symbol == "" {
+		return nil, fmt.Errorf("symbol is required")
+	}
+
+	queryParams := url.Values{}
+	queryParams.Add("symbol", symbol)
+
+	data, err := c.client.Do("CASH_FLOW", queryParams)
+	if err != nil {
+		return nil, err
+	}
+
+	var cashFlow types.CashFlowResponse
+	if err := json.Unmarshal(data, &cashFlow); err != nil {
+		return nil, err
+	}
+
+	if cashFlow.Symbol == "" {
+		return nil, fmt.Errorf("failed to retrieve cash flow for symbol %s", symbol)
+	}
+
+	return &cashFlow, nil
+}
