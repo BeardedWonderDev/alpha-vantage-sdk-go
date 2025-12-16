@@ -1,7 +1,6 @@
 package fundamentaldata
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/url"
 	"strings"
@@ -25,7 +24,7 @@ func (c *FundamentalDataService) ETFProfile(symbol string) (*types.ETFProfile, e
 	}
 
 	var profile types.ETFProfile
-	if err := json.Unmarshal(data, &profile); err != nil {
+	if err := types.UnmarshalLenient(data, &profile); err != nil {
 		return nil, err
 	}
 

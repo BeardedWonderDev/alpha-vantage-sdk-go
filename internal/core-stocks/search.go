@@ -1,7 +1,6 @@
 package corestocks
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/url"
 	"strings"
@@ -25,7 +24,7 @@ func (c *CoreStucksService) SymbolSearch(keywords string) (*types.SymbolSearchRe
 	}
 
 	var search types.SymbolSearchResponse
-	if err := json.Unmarshal(data, &search); err != nil {
+	if err := types.UnmarshalLenient(data, &search); err != nil {
 		return nil, err
 	}
 

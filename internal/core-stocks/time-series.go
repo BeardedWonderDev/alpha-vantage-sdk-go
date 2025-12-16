@@ -1,7 +1,6 @@
 package corestocks
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -21,7 +20,7 @@ func (c *CoreStucksService) Intraday(params types.TimeSeriesParams) (types.TimeS
 	}
 
 	var intradayData types.TimeSeriesIntraday
-	err = json.Unmarshal(data, &intradayData)
+	err = types.UnmarshalLenient(data, &intradayData)
 	if err != nil {
 		return types.TimeSeriesIntraday{}, err
 	}
@@ -38,7 +37,7 @@ func (c *CoreStucksService) Daily(params types.TimeSeriesParams) (types.TimeSeri
 	}
 
 	var dailyData types.TimeSeriesDaily
-	err = json.Unmarshal(data, &dailyData)
+	err = types.UnmarshalLenient(data, &dailyData)
 	if err != nil {
 		return types.TimeSeriesDaily{}, err
 	}
@@ -55,7 +54,7 @@ func (c *CoreStucksService) DailyAdjusted(params types.TimeSeriesParams) (types.
 	}
 
 	var dailyAdjustedData types.TimeSeriesDailyAdjusted
-	err = json.Unmarshal(data, &dailyAdjustedData)
+	err = types.UnmarshalLenient(data, &dailyAdjustedData)
 	if err != nil {
 		return types.TimeSeriesDailyAdjusted{}, err
 	}
@@ -71,7 +70,7 @@ func (c *CoreStucksService) Weekly(params types.TimeSeriesParams) (types.TimeSer
 	}
 
 	var weeklyData types.TimeSeriesWeekly
-	err = json.Unmarshal(data, &weeklyData)
+	err = types.UnmarshalLenient(data, &weeklyData)
 	if err != nil {
 		return types.TimeSeriesWeekly{}, err
 	}
@@ -87,7 +86,7 @@ func (c *CoreStucksService) WeeklyAdjusted(params types.TimeSeriesParams) (types
 	}
 
 	var weeklyAdjustedData types.TimeSeriesWeekly
-	err = json.Unmarshal(data, &weeklyAdjustedData)
+	err = types.UnmarshalLenient(data, &weeklyAdjustedData)
 	if err != nil {
 		return types.TimeSeriesWeekly{}, err
 	}
@@ -103,7 +102,7 @@ func (c *CoreStucksService) Monthly(params types.TimeSeriesParams) (types.TimeSe
 	}
 
 	var monthlyData types.TimeSeriesMonthly
-	err = json.Unmarshal(data, &monthlyData)
+	err = types.UnmarshalLenient(data, &monthlyData)
 	if err != nil {
 		return types.TimeSeriesMonthly{}, err
 	}
@@ -119,7 +118,7 @@ func (c *CoreStucksService) MonthlyAdjusted(params types.TimeSeriesParams) (type
 	}
 
 	var monthlyAdjustedData types.TimeSeriesMonthlyAdjusted
-	err = json.Unmarshal(data, &monthlyAdjustedData)
+	err = types.UnmarshalLenient(data, &monthlyAdjustedData)
 	if err != nil {
 		return types.TimeSeriesMonthlyAdjusted{}, err
 	}

@@ -149,7 +149,7 @@ func (t *TimeSeriesIntraday) UnmarshalJSON(data []byte) error {
 
 				var ohlcv OHLCV
 				ohlcv.Timestamp = timestamp
-				if err := json.Unmarshal(ohlcvData, &ohlcv); err != nil {
+				if err := UnmarshalLenient(ohlcvData, &ohlcv); err != nil {
 					return err
 				}
 				t.TimeSeries = append(t.TimeSeries, ohlcv)
@@ -177,7 +177,7 @@ func (ts *TimeSeriesDaily) UnmarshalJSON(data []byte) error {
 	}
 
 	// Unmarshal the data into the helper struct
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := UnmarshalLenient(data, aux); err != nil {
 		return err
 	}
 
@@ -212,7 +212,7 @@ func (ts *TimeSeriesDailyAdjusted) UnmarshalJSON(data []byte) error {
 	}
 
 	// Unmarshal the data into the helper struct
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := UnmarshalLenient(data, aux); err != nil {
 		return err
 	}
 
@@ -246,7 +246,7 @@ func (ts *TimeSeriesWeekly) UnmarshalJSON(data []byte) error {
 		Alias: (*Alias)(ts),
 	}
 
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := UnmarshalLenient(data, aux); err != nil {
 		return err
 	}
 
@@ -278,7 +278,7 @@ func (ts *TimeSeriesWeeklyAdjusted) UnmarshalJSON(data []byte) error {
 		Alias: (*Alias)(ts),
 	}
 
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := UnmarshalLenient(data, aux); err != nil {
 		return err
 	}
 
@@ -310,7 +310,7 @@ func (ts *TimeSeriesMonthly) UnmarshalJSON(data []byte) error {
 		Alias: (*Alias)(ts),
 	}
 
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := UnmarshalLenient(data, aux); err != nil {
 		return err
 	}
 
@@ -342,7 +342,7 @@ func (ts *TimeSeriesMonthlyAdjusted) UnmarshalJSON(data []byte) error {
 		Alias: (*Alias)(ts),
 	}
 
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := UnmarshalLenient(data, aux); err != nil {
 		return err
 	}
 
@@ -374,56 +374,59 @@ func (q *Quote) UnmarshalJSON(data []byte) error {
 	}
 
 	// Unmarshal the data into the helper struct
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := UnmarshalLenient(data, aux); err != nil {
 		return err
 	}
 
 	// Map each value from RawQuote to its corresponding field in the Quote struct
 	q.Symbol = aux.RawQuote["01. symbol"]
 
-	open, err := strconv.ParseFloat(aux.RawQuote["02. open"], 64)
+	open, err := parseFloatNA(aux.RawQuote["02. open"])
 	if err != nil {
 		return fmt.Errorf("error parsing 'open': %v", err)
 	}
 	q.Open = open
 
-	high, err := strconv.ParseFloat(aux.RawQuote["03. high"], 64)
+	high, err := parseFloatNA(aux.RawQuote["03. high"])
 	if err != nil {
 		return fmt.Errorf("error parsing 'high': %v", err)
 	}
 	q.High = high
 
-	low, err := strconv.ParseFloat(aux.RawQuote["04. low"], 64)
+	low, err := parseFloatNA(aux.RawQuote["04. low"])
 	if err != nil {
 		return fmt.Errorf("error parsing 'low': %v", err)
 	}
 	q.Low = low
 
-	price, err := strconv.ParseFloat(aux.RawQuote["05. price"], 64)
+	price, err := parseFloatNA(aux.RawQuote["05. price"])
 	if err != nil {
 		return fmt.Errorf("error parsing 'price': %v", err)
 	}
 	q.Price = price
 
-	volume, err := strconv.ParseInt(aux.RawQuote["06. volume"], 10, 64)
+	volume, err := parseInt64NA(aux.RawQuote["06. volume"])
 	if err != nil {
 		return fmt.Errorf("error parsing 'volume': %v", err)
 	}
 	q.Volume = volume
 
-	latestTradingDay, err := time.Parse("2006-01-02", aux.RawQuote["07. latest trading day"])
-	if err != nil {
-		return fmt.Errorf("error parsing 'latest trading day': %v", err)
+	latestTradingDayStr := strings.TrimSpace(aux.RawQuote["07. latest trading day"])
+	if latestTradingDayStr != "" && !isNAString(latestTradingDayStr) {
+		latestTradingDay, err := time.Parse("2006-01-02", latestTradingDayStr)
+		if err != nil {
+			return fmt.Errorf("error parsing 'latest trading day': %v", err)
+		}
+		q.LatestTradingDay = latestTradingDay
 	}
-	q.LatestTradingDay = latestTradingDay
 
-	prevClose, err := strconv.ParseFloat(aux.RawQuote["08. previous close"], 64)
+	prevClose, err := parseFloatNA(aux.RawQuote["08. previous close"])
 	if err != nil {
 		return fmt.Errorf("error parsing 'previous close': %v", err)
 	}
 	q.PreviousClose = prevClose
 
-	change, err := strconv.ParseFloat(aux.RawQuote["09. change"], 64)
+	change, err := parseFloatNA(aux.RawQuote["09. change"])
 	if err != nil {
 		return fmt.Errorf("error parsing 'change': %v", err)
 	}
@@ -432,6 +435,22 @@ func (q *Quote) UnmarshalJSON(data []byte) error {
 	q.ChangePercent = aux.RawQuote["10. change percent"]
 
 	return nil
+}
+
+func parseFloatNA(s string) (float64, error) {
+	s = strings.TrimSpace(s)
+	if s == "" || isNAString(s) {
+		return 0, nil
+	}
+	return strconv.ParseFloat(s, 64)
+}
+
+func parseInt64NA(s string) (int64, error) {
+	s = strings.TrimSpace(s)
+	if s == "" || isNAString(s) {
+		return 0, nil
+	}
+	return strconv.ParseInt(s, 10, 64)
 }
 
 // Length returns the count of time series data entries.

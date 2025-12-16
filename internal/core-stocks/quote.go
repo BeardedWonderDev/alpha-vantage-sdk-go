@@ -1,7 +1,6 @@
 package corestocks
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/url"
 	"strings"
@@ -26,7 +25,7 @@ func (c *CoreStucksService) Quote(symbol string) (types.Quote, error) {
 	}
 
 	var quote types.Quote
-	if err := json.Unmarshal(data, &quote); err != nil {
+	if err := types.UnmarshalLenient(data, &quote); err != nil {
 		return types.Quote{}, err
 	}
 

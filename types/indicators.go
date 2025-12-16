@@ -72,8 +72,22 @@ func UnmarshalIndicatorJSON(i *IndicatorResponse, data []byte, indicatorName str
 			valueMap := make(map[string]float64)
 
 			for name, rawValue := range indicatorData {
-				if value, ok := rawValue.(string); ok {
+				switch value := rawValue.(type) {
+				case string:
+					value = strings.TrimSpace(value)
+					if value == "" || isNAString(value) {
+						valueMap[name] = 0
+						continue
+					}
 					floatValue, err := strconv.ParseFloat(value, 64)
+					if err != nil {
+						return err
+					}
+					valueMap[name] = floatValue
+				case float64:
+					valueMap[name] = value
+				case json.Number:
+					floatValue, err := value.Float64()
 					if err != nil {
 						return err
 					}
@@ -102,19 +116,45 @@ func extractMetaData(rawData map[string]interface{}) TimeSeriesMetaData {
 	for key, value := range rawData {
 		switch key {
 		case "1: Symbol":
-			metaData.Symbol = value.(string)
+			if v, ok := value.(string); ok {
+				metaData.Symbol = v
+			}
 		case "2: Indicator":
-			metaData.Information = value.(string)
+			if v, ok := value.(string); ok {
+				metaData.Information = v
+			}
 		case "3: Last Refreshed":
-			metaData.LastRefreshed = value.(string)
+			if v, ok := value.(string); ok {
+				metaData.LastRefreshed = v
+			}
 		case "4: Interval":
-			metaData.Interval = value.(string)
+			if v, ok := value.(string); ok {
+				metaData.Interval = v
+			}
 		case "5: Time Period":
-			metaData.TimePeriod = value.(float64)
+			switch v := value.(type) {
+			case float64:
+				metaData.TimePeriod = v
+			case json.Number:
+				if f, err := v.Float64(); err == nil {
+					metaData.TimePeriod = f
+				}
+			case string:
+				v = strings.TrimSpace(v)
+				if v != "" && !isNAString(v) {
+					if f, err := strconv.ParseFloat(v, 64); err == nil {
+						metaData.TimePeriod = f
+					}
+				}
+			}
 		case "6: Series Type":
-			metaData.SeriesType = value.(string)
+			if v, ok := value.(string); ok {
+				metaData.SeriesType = v
+			}
 		case "7: Time Zone":
-			metaData.TimeZone = value.(string)
+			if v, ok := value.(string); ok {
+				metaData.TimeZone = v
+			}
 		}
 	}
 	return metaData
