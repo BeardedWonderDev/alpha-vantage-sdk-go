@@ -1,7 +1,6 @@
 package fundamentaldata
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/url"
 	"strings"
@@ -25,7 +24,7 @@ func (c *FundamentalDataService) Dividends(symbol string) (*types.DividendsRespo
 	}
 
 	var divs types.DividendsResponse
-	if err := json.Unmarshal(data, &divs); err != nil {
+	if err := types.UnmarshalLenient(data, &divs); err != nil {
 		return nil, err
 	}
 
@@ -48,7 +47,7 @@ func (c *FundamentalDataService) Splits(symbol string) (*types.SplitsResponse, e
 	}
 
 	var splits types.SplitsResponse
-	if err := json.Unmarshal(data, &splits); err != nil {
+	if err := types.UnmarshalLenient(data, &splits); err != nil {
 		return nil, err
 	}
 

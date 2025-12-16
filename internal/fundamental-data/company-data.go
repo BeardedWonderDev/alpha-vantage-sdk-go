@@ -1,7 +1,6 @@
 package fundamentaldata
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/url"
 	"strings"
@@ -25,7 +24,7 @@ func (c *FundamentalDataService) CompanyOverview(symbol string) (*types.CompanyO
 	}
 
 	var overview types.CompanyOverviewResponse
-	if err := json.Unmarshal(data, &overview); err != nil {
+	if err := types.UnmarshalLenient(data, &overview); err != nil {
 		return nil, err
 	}
 
@@ -52,7 +51,7 @@ func (c *FundamentalDataService) IncomeStatement(symbol string) (*types.IncomeSt
 	}
 
 	var statement types.IncomeStatementResponse
-	if err := json.Unmarshal(data, &statement); err != nil {
+	if err := types.UnmarshalLenient(data, &statement); err != nil {
 		return nil, err
 	}
 
@@ -80,7 +79,7 @@ func (c *FundamentalDataService) BalanceSheet(symbol string) (*types.BalanceShee
 	}
 
 	var sheet types.BalanceSheetResponse
-	if err := json.Unmarshal(data, &sheet); err != nil {
+	if err := types.UnmarshalLenient(data, &sheet); err != nil {
 		return nil, err
 	}
 
@@ -108,7 +107,7 @@ func (c *FundamentalDataService) CashFlow(symbol string) (*types.CashFlowRespons
 	}
 
 	var cashFlow types.CashFlowResponse
-	if err := json.Unmarshal(data, &cashFlow); err != nil {
+	if err := types.UnmarshalLenient(data, &cashFlow); err != nil {
 		return nil, err
 	}
 

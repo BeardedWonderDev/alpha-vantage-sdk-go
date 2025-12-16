@@ -69,6 +69,16 @@ Key characteristics:
 - Domain-oriented services from a single client
 - Alpha Vantage informational/error payloads are surfaced as Go errors
 
+### Handling `"n/a"` in Numeric Fields
+
+Alpha Vantage sometimes returns placeholder strings like `"n/a"` / `"N/A"` for fields that are otherwise numeric (commonly seen in `ETF_PROFILE`, e.g. `net_expense_ratio` or `sectors[].weight`). When a field is modeled as a Go number using the `json:",string"` tag, Go's JSON decoder will otherwise fail with an error like:
+
+`invalid use of ,string struct tag, trying to unmarshal "n/a" into float64`
+
+**Current workaround (in this repo):** responses are unmarshaled with a lenient decoder that coerces `"n/a"`/`"na"` placeholders into numeric zero values for numeric destinations, so calls don't fail. This means you cannot distinguish *missing* vs a real numeric `0` purely from the typed response.
+
+If you need that distinction today, treat `0` as potentially-missing for affected fields and fall back to raw Alpha Vantage data sources for confirmation.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With

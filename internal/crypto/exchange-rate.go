@@ -1,7 +1,6 @@
 package crypto
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/url"
 	"strings"
@@ -30,7 +29,7 @@ func (c *CryptoService) ExchangeRate(params types.CryptoExchangeRateParams) (*ty
 	}
 
 	var resp types.CurrencyExchangeRateResponse
-	if err := json.Unmarshal(data, &resp); err != nil {
+	if err := types.UnmarshalLenient(data, &resp); err != nil {
 		return nil, err
 	}
 

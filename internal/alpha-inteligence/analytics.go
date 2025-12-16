@@ -1,7 +1,6 @@
 package alphainteligence
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/url"
 	"strings"
@@ -51,7 +50,7 @@ func (c *AlphaInteligenceService) AnalyticsSlidingWindow(params types.AnalyticsS
 	}
 
 	var resp types.AnalyticsSlidingWindowResponse
-	if err := json.Unmarshal(data, &resp); err != nil {
+	if err := types.UnmarshalLenient(data, &resp); err != nil {
 		return nil, err
 	}
 
@@ -96,7 +95,7 @@ func (c *AlphaInteligenceService) AnalyticsFixedWindow(params types.AnalyticsFix
 	}
 
 	var resp types.AnalyticsFixedWindowResponse
-	if err := json.Unmarshal(data, &resp); err != nil {
+	if err := types.UnmarshalLenient(data, &resp); err != nil {
 		return nil, err
 	}
 

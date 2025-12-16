@@ -272,6 +272,59 @@ func TestFundamentalData_ETFProfile_SendsExpectedQueryAndParsesResponse(t *testi
 	}
 }
 
+func TestFundamentalData_ETFProfile_AllowsNAForNumericFields(t *testing.T) {
+	fixture := []byte(`{
+  "net_assets": "1000",
+  "net_expense_ratio": "n/a",
+  "portfolio_turnover": "n/a",
+  "dividend_yield": "N/A",
+  "inception_date": "2020-01-01",
+  "leveraged": "NO",
+  "sectors": [{"sector": "TECH", "weight": "n/a"}],
+  "holdings": [{"symbol": "ABC", "description": "n/a", "weight": "n/a"}]
+}`)
+
+	httpClient := &http.Client{
+		Transport: roundTripFunc(func(req *http.Request) (*http.Response, error) {
+			q := req.URL.Query()
+			if q.Get("function") != "ETF_PROFILE" {
+				return nil, fmt.Errorf("expected function ETF_PROFILE, got %q", q.Get("function"))
+			}
+			if q.Get("symbol") != "QQQ" {
+				return nil, fmt.Errorf("expected symbol QQQ, got %q", q.Get("symbol"))
+			}
+
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Body:       io.NopCloser(bytes.NewReader(fixture)),
+				Header:     make(http.Header),
+				Request:    req,
+			}, nil
+		}),
+	}
+
+	cli := av.NewClientWithHTTPClient("test-key", httpClient)
+	profile, err := cli.FundamentalData().ETFProfile("QQQ")
+	if err != nil {
+		t.Fatalf("ETFProfile returned error: %v", err)
+	}
+	if profile.NetAssets != 1000 {
+		t.Fatalf("expected net assets 1000, got %d", profile.NetAssets)
+	}
+	if profile.NetExpenseRatio != 0 {
+		t.Fatalf("expected net expense ratio 0, got %v", profile.NetExpenseRatio)
+	}
+	if profile.DividendYield != 0 {
+		t.Fatalf("expected dividend yield 0, got %v", profile.DividendYield)
+	}
+	if len(profile.Sectors) != 1 || profile.Sectors[0].Weight != 0 {
+		t.Fatalf("expected sector weight to be 0, got %+v", profile.Sectors)
+	}
+	if len(profile.Holdings) != 1 || profile.Holdings[0].Weight != 0 {
+		t.Fatalf("expected holding weight to be 0, got %+v", profile.Holdings)
+	}
+}
+
 func TestFundamentalData_Dividends_SendsExpectedQueryAndParsesResponse(t *testing.T) {
 	fixture, err := os.ReadFile("../models/testdata/dividends_IBM.json")
 	if err != nil {

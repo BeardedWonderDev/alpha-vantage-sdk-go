@@ -1,7 +1,6 @@
 package forex
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/url"
 	"strings"
@@ -30,7 +29,7 @@ func (c *ForexService) ExchangeRate(params types.ForexExchangeRateParams) (*type
 	}
 
 	var resp types.CurrencyExchangeRateResponse
-	if err := json.Unmarshal(data, &resp); err != nil {
+	if err := types.UnmarshalLenient(data, &resp); err != nil {
 		return nil, err
 	}
 
